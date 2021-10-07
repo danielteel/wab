@@ -1,28 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
-
-
-const inlineSVG = (svg) => svg.split('').filter( (a) => a!=='/' ).join('')
+import NumberPad from './components/NumberPad';
+import React from 'react';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [visible, setVisible] = React.useState(true);
+    return (
+        <div className="App">
+            <header className="App-header">
+                <p>
+                    Edit
+                    <code>src/App.js</code>
+                    and save to reload.
+                </p>
+                <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
+                    Learn React
+                </a>
+            </header>
+            {
+                visible
+                ?
+                    <NumberPad title="yolo" initialValue={69} saveAndClose={(v)=>console.log(v, setVisible(false))}/>
+                :
+                    null
+            }
+        </div>
+    );
 }
 
 export default App;
