@@ -1,11 +1,13 @@
 const gulp = require('gulp');
 const replace = require('gulp-replace');
 const inlinesource = require('gulp-inline-source')
-
 const path = require('path');
 const fs = require('fs');
 
-const buildDir = __dirname+path.sep+'build'+path.sep;
+
+const buildDir = __dirname+path.sep+'build'+path.sep;   //Customize this to meet your needs
+const buildFileName = "index.html";                     //and this one as well
+
 
 const fileRegEx = /["']\/?([\w-// /.]+\.(ico|png|jpg|jpeg|svg|json))["']/gi
 const urlRegEx =/url\((?!['"]?(?:data|http|https):)['"]?([^'"\)]*)['"]?\)/gi
@@ -76,8 +78,8 @@ function fileToURL(fileName){
 }
 
 gulp.task('postbuild', async ()=>{
-
-    await gulp.src(buildDir+'index.html')
+    console.log("Compiling everything into just "+buildFileName)
+    await gulp.src(buildDir+buildFileName)
         .pipe(replace('.js"></script>', ()=>{console.log("Inlining script"); return '.js" inline></script>';}))
         .pipe(replace('rel="stylesheet">',  ()=>{console.log("Inlining stylesheet"); return 'rel="stylesheet" inline>';}))
         .pipe(inlinesource({
