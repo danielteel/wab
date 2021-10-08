@@ -82,7 +82,7 @@ export default class NumberPad extends React.Component {
         super(props);
         this.state={width: document.body.clientWidth, height: document.body.clientHeight};
         this.touch={};
-        this.scratchpad=props.initialValue;
+        this.scratchpad=isFinite(props.initialValue)?props.initialValue:0;
         this.canvasRef = React.createRef();
 
         this.mounted=true;
