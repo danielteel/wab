@@ -1,5 +1,5 @@
 import NumberPad from './components/NumberPad';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 
 function loadAppStateString(){
@@ -30,8 +30,13 @@ function App() {
     const [appStateString, setAppStateString] = React.useState(()=>loadAppStateString());
     const appState = JSON.parse(appStateString);
 
+    const firstRender = useRef(true);
+
     useEffect(()=>{
-        console.log("Setting timeout");
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
         const timeoutId = setTimeout(()=>saveAppStateString(JSON.stringify(appState)), 5000);
         return () => {
             console.log("Clearing timeout");
@@ -52,7 +57,7 @@ function App() {
                 </a>
             </header>
             {
-                    <NumberPad title="yolo" initialValue={69} saveAndClose={(v)=>{console.log("Clicked");setAppStateString(JSON.stringify({...appState, number: v}))}}/>
+                    <NumberPad title="yolo" initialValue={appState.number} saveAndClose={(v)=>{console.log("Clicked");setAppStateString(JSON.stringify({...appState, number: v}))}}/>
             }
         </div>
     );
