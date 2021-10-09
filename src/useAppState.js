@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 function saveAppState(localStorageKey, stateObj){
+    console.log("Saving", stateObj);
     try {
         localStorage.setItem(localStorageKey, JSON.stringify(stateObj));
     } catch {
@@ -9,35 +10,20 @@ function saveAppState(localStorageKey, stateObj){
     }
 }
 
-function loadAppStateString(localStorageKey){
+function loadAppStateString(localStorageKey, defaultAppState){
     let stateObj;
-    let needsSavedToStorage=false;
     try {
         stateObj = JSON.parse(localStorage.getItem(localStorageKey));
-        const fixField = (field, newData) => {
-            stateObj[field]=newData;
-            needsSavedToStorage=true;
-        }
-        if (!Array.isArray(stateObj.standardKit)) fixField('standardKit',[]);
-        if (!Array.isArray(stateObj.standardCargo)) fixField('standardCargo',[]);
-        if (!Array.isArray(stateObj.aircraft)) fixField('aircraft',[]);
-        if (!Array.isArray(stateObj.forms)) fixField('forms',[]);
-
+        if (!stateObj) throw Error();
     } catch {
-        stateObj={
-            standardKit: [],
-            standardCargo: [],
-            aircraft: [],
-            forms: []
-        };
-        needsSavedToStorage=true;
+        stateObj = defaultAppState;
+        saveAppState(localStorageKey, defaultAppState);
     }
-    if (needsSavedToStorage) saveAppState(localStorageKey, stateObj);
     return JSON.stringify(stateObj);
 }
 
-export default function useAppState(localStorageKey, saveAppStateTimeout){
-    const [appStateString, setAppStateString] = useState(()=>loadAppStateString(localStorageKey));
+export default function useAppState(localStorageKey, defaultAppState, saveAppStateTimeout){
+    const [appStateString, setAppStateString] = useState(()=>loadAppStateString(localStorageKey, defaultAppState));
     const appState = JSON.parse(appStateString);
 
     const firstRender = useRef(true);
@@ -57,5 +43,11 @@ export default function useAppState(localStorageKey, saveAppStateTimeout){
         }
     }, [appState, saveAppStateTimeout, localStorageKey]);
 
-    return [appState, (newAppState)=>setAppStateString(JSON.stringify(newAppState))];
+    return [appState, (newAppState)=>{
+        if (typeof newAppState==='function'){
+            setAppStateString( (v)=>JSON.stringify(newAppState(JSON.parse(v))) )
+        }else{
+            setAppStateString(JSON.stringify(newAppState))
+        }
+    }];
 }
