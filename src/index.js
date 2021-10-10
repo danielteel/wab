@@ -6,7 +6,8 @@ import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App nameSpace='wab' />
+    <App nameSpace='DANTEEL'/>
   </React.StrictMode>,
   document.getElementById('root')
 );

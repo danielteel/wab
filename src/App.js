@@ -1,37 +1,36 @@
 import NumberPad from './components/NumberPad';
 import React, { useEffect, useRef, useState } from 'react';
 
-import useAppState from './useAppState';
+import {useLocalKeyIndexes, useLocalStorageState} from './useLocalStorage';
 
 const saveAppStateTimeout = 1000;//How long it should wait for any other state changes to save the state to localStorage
 
-const defaultAppState = {
-    standardKit: [],
-    standardCargo: [],
-    aircraft: [],
-    forms: []
-};
+function Thang({index, deleteItem, nameSpace}){
+    const [appState, setAppState] = useLocalStorageState(nameSpace, "number-array", index, [], saveAppStateTimeout);
+    return <>
+    <button onClick={()=>{
+        setAppState( appState => [...appState, appState.length] );
+    }}>{index}</button>
+    <button onClick={()=>{
+        deleteItem(index);
+    }}>Delete</button>
+    {
+        <ul>
+            { appState.map( item => <li>{item}</li>)}
+        </ul>
+    }
+    </>
+}
 
-function App() {
-    const [appState, setAppState] = useAppState("wab-state", defaultAppState, saveAppStateTimeout);
-    
+function App({nameSpace}) {
+    const [keyIndexes, newItem, deleteItem] = useLocalKeyIndexes(nameSpace, 'number-array');
     return (
-        <div className="App">
-            <header className="App-header">
-                <p>
-                    Edit
-                    <code>src/App.js</code>
-                    and save to reload.
-                </p>
-                <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-                    Learn React
-                </a>
-            </header>
+        <div className="App" style={{backgroundColor: '#AAAAAA'}}><br/>
+            LIST OF SHIT<br/>
+            {keyIndexes.map( index=> <Thang index={index} deleteItem={deleteItem} nameSpace={nameSpace}/>)}
             <button onClick={()=>{
-                setAppState( appState => ({...appState, standardKit: [...appState.standardKit, "1"]}) )
-                setAppState( appState => ({...appState, standardKit: [...appState.standardKit, "2"]}) )
-                setAppState( appState => ({...appState, standardKit: [...appState.standardKit, "3"]}) )
-            }}>Hiii</button>
+                for (let i=0;i<100;i++) newItem([]);
+            }}>New item</button>
         </div>
     );
 }
