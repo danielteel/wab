@@ -18,6 +18,16 @@ function deconstructArrayKey(key){
     return [true, curNameSpace, curArrayName, curIndex];
 }
 
+function isKeyAMatch(key, nameSpaceToCheck, arrayNameToCheck, indexToCheck=null){
+    const [isValid, nameSpace, arrayName, index] = deconstructArrayKey(key);
+
+    if (!isValid) return false;
+    if (indexToCheck!==null && index!==indexToCheck) return false;
+
+    if (nameSpace===nameSpaceToCheck && arrayName===arrayNameToCheck) return true;
+    return false;
+}
+
 //Return all current keys in the 'array' and a free key name for a new one
 function getArrayKeys(nameSpaceItsIn, arrayName){
     let keys=[];
@@ -62,7 +72,6 @@ function useLocalStorageArray(nameSpace, arrayName){
             }
          return [[...oldKeysInArray, oldFreeKey ], constructArrayKey(nameSpace, arrayName, ++freeIndex)];
         })
-
     }
 
     const deleteItem = (key) => {
@@ -74,16 +83,14 @@ function useLocalStorageArray(nameSpace, arrayName){
 
     useEffect(() => {
         const handler = (e) => {
+            if (e.storageArea!==localStorage) return;
             if (e.key===null){
-                setKeys( () => getArrayKeys(nameSpace,arrayName) );
-            }else{
-                const currentKeySplit = e.key.split('$');
-                const currentKeyNameSpace = currentKeySplit[0];
-                const currentKeyKey = currentKeySplit[1];
-                const currentKeyIndex = currentKeySplit[2];
-                if (e.storageArea === localStorage && currentKeyNameSpace===nameSpace && currentKeyKey===key) {
-                    console.log("Storage",nameSpace, key, currentKeyIndex);
-                    setKeyIndexes(keyIndexes.filter( item => item!==currentKeyIndex));
+                setKeys( ([oldKeysInArray, oldFreeKey]) => getArrayKeys(nameSpace,arrayName) )//All data has been cleared
+            } else if (e.newValue===null && keysInArray.includes(e.key)){
+                deleteItem()//Singular key has been deleted
+            } else if (e.key){
+                if (isKeyAMatch(e.key, nameSpace, arrayName)){
+                    
                 }
             }
         };
