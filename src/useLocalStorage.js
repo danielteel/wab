@@ -152,69 +152,69 @@ function useLocalStorageArray(nameSpace, arrayName){
 }
 
 
-function useLocalStorageArrayItem(key, defaultValue, saveHysteresis=1000){
-    //useState and initiliaze to either whats stored in localStorage or the defaultValue passed in
-    const [state, setState] = useState( () => {
-        let storedObj;
-        let storedString=localStorage.getItem(key);
-        if (storedString!==null){
-            //Key exists, try and parse it as a JSON object
-            try {
-                storedObj = JSON.parse(storedString);
-            } catch {
-                //failed to parse it, leave storedObj undefined so we know to initiliaze
-            }
-        }
-        if (!storedObj){
-            //Key doesnt exist or its not a valid JSON object, initiliaze to defaultValue and try to save this key
-            storedObj=defaultValue;
-            try {
-                localStorage.setItem(key, defaultValue);
-            } catch {
-                console.error("useLocalStorageArrayItem: failed to save key to localStorage key:",key);
-            }
-        }
-        return storedObj;
-    });
+// function useLocalStorageArrayItem(key, defaultValue, saveHysteresis=1000){
+//     //useState and initiliaze to either whats stored in localStorage or the defaultValue passed in
+//     const [state, setState] = useState( () => {
+//         let storedObj;
+//         let storedString=localStorage.getItem(key);
+//         if (storedString!==null){
+//             //Key exists, try and parse it as a JSON object
+//             try {
+//                 storedObj = JSON.parse(storedString);
+//             } catch {
+//                 //failed to parse it, leave storedObj undefined so we know to initiliaze
+//             }
+//         }
+//         if (!storedObj){
+//             //Key doesnt exist or its not a valid JSON object, initiliaze to defaultValue and try to save this key
+//             storedObj=defaultValue;
+//             try {
+//                 localStorage.setItem(key, defaultValue);
+//             } catch {
+//                 console.error("useLocalStorageArrayItem: failed to save key to localStorage key:",key);
+//             }
+//         }
+//         return storedObj;
+//     });
 
 
-    const firstRender = useRef({firstRender: true, key: key});
-    useEffect(()=>{
-        if (firstRender.current) {//No need to set a timeout and save if its just the initial render.
-            firstRender.current = false;
-            return;
-        }
-        let timeoutId = setTimeout(()=>{
-            saveToStorage(key, state);
-            timeoutId=null;
-        }, saveHysteresis);
-        return () => {
-            if (timeoutId){
-                clearTimeout(timeoutId);
-            }
-        }
-    }, [state, key, saveHysteresis]);
+//     const firstRender = useRef({firstRender: true, key: key});
+//     useEffect(()=>{
+//         if (firstRender.current) {//No need to set a timeout and save if its just the initial render.
+//             firstRender.current = false;
+//             return;
+//         }
+//         let timeoutId = setTimeout(()=>{
+//             saveToStorage(key, state);
+//             timeoutId=null;
+//         }, saveHysteresis);
+//         return () => {
+//             if (timeoutId){
+//                 clearTimeout(timeoutId);
+//             }
+//         }
+//     }, [state, key, saveHysteresis]);
 
 
-    //Check if key is valid, if its not return null and a function that does nothing
-    const [isValid] = deconstructArrayKey(key);
-    if (!isValid) return [null,()=>{}];
+//     //Check if key is valid, if its not return null and a function that does nothing
+//     const [isValid] = deconstructArrayKey(key);
+//     if (!isValid) return [null,()=>{}];
 
-    //This is the function users will call to set the state, which will also save to localStorage after a timeout period.
-    //It makes shallow copies to force a re-render which will update localStorage
-    const setStateCallback = (newValue) => {
-        if (typeof newValue==='function'){
-            setState( (oldValue) => newValue(oldValue) );
-        }else if (Array.isArray(newValue)){
-            setState( () => [...newValue] );
-        }else if (typeof newValue==='object' && newValue!==null){
-            setState( () => ({...newValue}) );
-        }else{
-            setState( () => newValue );
-        }
-    }
+//     //This is the function users will call to set the state, which will also save to localStorage after a timeout period.
+//     //It makes shallow copies to force a re-render which will update localStorage
+//     const setStateCallback = (newValue) => {
+//         if (typeof newValue==='function'){
+//             setState( (oldValue) => newValue(oldValue) );
+//         }else if (Array.isArray(newValue)){
+//             setState( () => [...newValue] );
+//         }else if (typeof newValue==='object' && newValue!==null){
+//             setState( () => ({...newValue}) );
+//         }else{
+//             setState( () => newValue );
+//         }
+//     }
 
-    return [state, setStateCallback];
-}
+//     return [state, setStateCallback];
+// }
 
-export {useLocalStorageArray, useLocalStorageArrayItem};
+export {useLocalStorageArray};
