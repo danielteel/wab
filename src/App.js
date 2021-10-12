@@ -4,18 +4,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import {useLocalStorageArray} from './useLocalStorage';
 
 
+function ItemView({item, setItem, deleteThis, closeThis}){
+    return <div style={{margin:"10px"}}>
+        <input type='text' value={item.value.name} onChange={(e)=>setItem(item.key, {name: e.target.value})}/>
+        <br/>
+        <button onClick={()=>setItem(item.key, {number: item.value.number-1})}>-</button>
+        <input type='text' size={3} value={item.value.number}/>
+        <button onClick={()=>setItem(item.key, {number: item.value.number+1})}>+</button>
+        <br/>
+        <button onClick={()=>deleteThis()}>Delete</button>
+        <button onClick={()=>closeThis()}>Close</button>
+    </div>
+}
+
 function App({nameSpace}) {
-    const [keys, addItem, deleteItem, getItem, setItem] = useLocalStorageArray(nameSpace, 'number-array');
-    console.log("Keys",typeof keys);
+    const [keyValuePairs, addItem, deleteItem, setItem, mergeItem] = useLocalStorageArray(nameSpace, 'number-array');
+    const [selectedItem, setSelectedItem] = useState(null);
+    if (selectedItem){
+        return <ItemView item={selectedItem} setItem={mergeItem} closeThis={()=>setSelectedItem(null)} deleteThis={()=>{deleteItem(selectedItem.key); setSelectedItem(null);}}/>
+    }
     return (
         <div className="App" style={{backgroundColor: '#AAAAAA'}}><br/>
             <button onClick={()=>{
-                addItem({title: 'Unnamed'});
+                addItem({number: 0, name: 'Unnamed'});
             }}>New item</button>
             {
-                keys.map( key => <button key={key} onClick={()=>{
-                    console.log(key);
-                }}>{key}</button>)
+                keyValuePairs.map( pair => <button onClick={()=>{
+                    setSelectedItem(pair);
+                }}>{pair.value?.name+" "+pair.value?.number}</button>)
             }
         </div>
     );
