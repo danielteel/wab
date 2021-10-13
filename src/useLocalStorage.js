@@ -125,6 +125,22 @@ function keyValuePairsIncludes(keyValuePairs, key){
     return false;
 }
 
+
+let subscriberCount=0;
+const subscribers=[];
+function subscribeToStorageEvents(callback){
+    subscribers.push({id: subscriberCount, callback: callback});
+    return subscriberCount++;
+}
+
+function unsubscribeToStorageEvents(subscriberId){
+    subscribers=subscribers.filter( item => !(item.id===subscriberId) );
+}
+
+function broadcastStorageEvent(originatorId, action, key, newValue){
+    subscribers.forEach( (item) => (item.id!==originatorId ? item.callback(action, key, newValue) : null) );
+}
+
 function useLocalStorageArray(nameSpace, arrayName){
     const [keyValuePairs, setKeyValuePairs] = useState( () => readLocalStorageKeyValuePairs(nameSpace,arrayName) );
 
@@ -178,6 +194,20 @@ function useLocalStorageArray(nameSpace, arrayName){
             });
         }
     }
+
+    const storageEventCallback = (key, value, action) => {
+
+    }
+
+    
+    const [subscriberId, setSubscriberId] = useState(null);
+    
+    useEffect( ()=>{
+        const subscriberId = subscribeToStorageEvents()
+        setSubscriberId( ()=>subscriberId );
+        return (unsubscribeToStorageEvents(subscriberId))
+    },[])
+;
 
     useEffect(() => {
         const handler = (e) => {

@@ -8,7 +8,7 @@ import App from './App';
 ReactDOM.render(
   <React.StrictMode>
     <App nameSpace='wab' />
-    <App nameSpace='DANTEEL'/>
+    <App nameSpace='wab'/>
   </React.StrictMode>,
   document.getElementById('root')
 );
