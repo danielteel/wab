@@ -127,7 +127,7 @@ function keyValuePairsIncludes(keyValuePairs, key){
 
 
 let subscriberCount=0;
-const subscribers=[];
+let subscribers=[];
 function subscribeToStorageEvents(callback){
     subscribers.push({id: subscriberCount, callback: callback});
     return subscriberCount++;
@@ -138,86 +138,133 @@ function unsubscribeToStorageEvents(subscriberId){
 }
 
 function broadcastStorageEvent(originatorId, action, key, newValue){
-    subscribers.forEach( (item) => (item.id!==originatorId ? item.callback(action, key, newValue) : null) );
+    setTimeout( ()=>{
+        for (let subscriber of subscribers){
+            if (subscriber.id!==originatorId){
+                subscriber.callback(action, key, newValue);
+            }
+        }
+    }, 0);
 }
 
 function useLocalStorageArray(nameSpace, arrayName){
     const [keyValuePairs, setKeyValuePairs] = useState( () => readLocalStorageKeyValuePairs(nameSpace,arrayName) );
-
+    const [subscriberId, setSubscriberId] = useState(null);
+    
     //Add item function, call this with a value to create a new item with value. If you want to know what this new key is, pass in a callback function that will get called with the key
-    const addItem = (value, callbackWithNewKey) => {
+    const _addItemInternal = (key, value, cbWhenAdding=(key, value)=>(null))=>{
         setKeyValuePairs( (oldKeyValuePairs) => {
-            const freeKey = freeKeyFromList(oldKeyValuePairs, nameSpace, arrayName);
-            saveToStorageWithHystersis(freeKey, value);
-            if (typeof callbackWithNewKey==='function') callbackWithNewKey(freeKey);
-            return [...oldKeyValuePairs, {key: freeKey, value}];
+            if (!key) key = freeKeyFromList(oldKeyValuePairs, nameSpace, arrayName);
+            cbWhenAdding(key, value);
+            return [...oldKeyValuePairs, {key, value}];
+        });
+    }
+    const addItem = (value, callbackWithNewKey) => {
+        _addItemInternal(null, value, (key, value) => {
+            saveToStorageWithHystersis(key, value);
+            if (typeof callbackWithNewKey==='function') callbackWithNewKey(key);
+            broadcastStorageEvent(subscriberId, 'add', key, value);
         });
     }
 
     //Delete item function, call this with the key name and it'll remove it from the list if it makes sense to
-    const deleteItem = (key, _internal_alreadyRemoved=false) => {
+    const _deleteItemInternal = (key, cbWhenDeleting=(key)=>(null)) =>{
         if (isKeyAMatch(key, nameSpace, arrayName)){
-            cancelSaveToStorageWithHystersis(key);
             setKeyValuePairs( (oldKeyValuePairs) => {
-                if (_internal_alreadyRemoved===false) localStorage.removeItem(key);
+                cbWhenDeleting(key);
                 return oldKeyValuePairs.filter( pair => pair.key !== key );
             });
-        }
+        } 
+    }
+    const deleteItem = (key) => {
+        _deleteItemInternal(key, (key) => {
+            cancelSaveToStorageWithHystersis(key);
+            localStorage.removeItem(key);
+            broadcastStorageEvent(subscriberId, 'delete', key, null);
+        });
     }
 
-    const setItem = (key, value, _internal_alreadySaved=false) => {
-        if (!_internal_alreadySaved) saveToStorageWithHystersis(key, value);
+    const _setItemInternal = (key, value, cbWhenSetting=(key, value)=>(null)) => {
         setKeyValuePairs( (oldKeyValuePairs) => {
             const index=oldKeyValuePairs.findIndex( kvPair => kvPair.key===key );
             if (index>=0){
                 const newKeyValuePairs = [...oldKeyValuePairs];
                 newKeyValuePairs[index].value=value;
+                cbWhenSetting(key, value);
                 return newKeyValuePairs;
             }
             return oldKeyValuePairs;
         });
     }
+    const setItem = (key, value) => {
+        _setItemInternal(key, value, (key, value) => {
+            saveToStorageWithHystersis(key, value);
+            broadcastStorageEvent(subscriberId, 'set', key, value);
+        })
+    }
 
-    const mergeItem = (key, value) => {
+
+    const _mergeItemInternal = (key, value, cbWhenMerging=(key, newValue)=>(null)) => {
         const item = keyValuePairs.find( item => item.key===key);
         if (item){
             const newValue=Object.assign({...item.value}, value);
-            saveToStorageWithHystersis(key, newValue);
             setKeyValuePairs( (oldKeyValuePairs) => {
                 const index=oldKeyValuePairs.findIndex( kvPair => kvPair.key===key );
                 if (index>=0){
                     const newKeyValuePairs = [...oldKeyValuePairs];
                     newKeyValuePairs[index].value=newValue;
+                    cbWhenMerging(key, newValue);
                     return newKeyValuePairs;
                 }
                 return oldKeyValuePairs;
             });
         }
     }
+    const mergeItem = (key, value) => {
+        _mergeItemInternal(key, value, (key, newValue)=>{
+            saveToStorageWithHystersis(key, newValue);
+            broadcastStorageEvent(subscriberId, 'merge', key, newValue);
+        })
+    }
 
-    const storageEventCallback = (key, value, action) => {
-
+    const storageEventCallback = (action, key, value) => {
+        if (!isKeyAMatch(key, nameSpace, arrayName)) return;
+        switch (action){
+            case 'delete':
+                _deleteItemInternal(key);
+                break;
+            case 'add':
+                _addItemInternal(key, value);
+                break;
+            case 'set':
+                _setItemInternal(key, value);
+                break;
+            case 'merge':
+                _mergeItemInternal(key, value);
+                break;
+            default:
+                console.error("storageEventCallback: unknown action ", action);
+        }
     }
 
     
-    const [subscriberId, setSubscriberId] = useState(null);
-    
-    useEffect( ()=>{
-        const subscriberId = subscribeToStorageEvents()
-        setSubscriberId( ()=>subscriberId );
-        return (unsubscribeToStorageEvents(subscriberId))
+    useEffect( () => {
+        const subscriberId = subscribeToStorageEvents(storageEventCallback);
+        setSubscriberId(subscriberId);
+        return (()=>unsubscribeToStorageEvents(subscriberId))
     },[])
 ;
 
     useEffect(() => {
         const handler = (e) => {
+            
             if (e.storageArea!==localStorage) return;
 
             if (e.key===null){//All keys have been cleared
                 setKeyValuePairs( () => readLocalStorageKeyValuePairs(nameSpace,arrayName) );
 
             } else if (e.newValue===null && keyValuePairsIncludes(keyValuePairs, e.key)){//key has been deleted
-                deleteItem(e.key, true);
+                _deleteItemInternal(e.key);
                 
             } else if (e.key){
                 if (isKeyAMatch(e.key, nameSpace, arrayName)){//Key added or changed
@@ -240,7 +287,7 @@ function useLocalStorageArray(nameSpace, arrayName){
                             return newKeyValuePairs.map( key => ({key: key.key, value: key.value}) );
                         });
                     }else{//One of our keys has been changed
-                        setItem(e.key, value, true);
+                        _setItemInternal(e.key, value);
                     }
                 }
             }

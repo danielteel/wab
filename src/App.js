@@ -26,6 +26,7 @@ function App({nameSpace}) {
     return (
         <div className="App" style={{backgroundColor: '#AAAAAA'}}><br/>
             <button onClick={()=>{
+                console.log("clicked add");
                 addItem({number: 0, name: 'Unnamed'});
             }}>New item</button>
             {
