@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 
 function constructArrayKey(nameSpace, arrayName, index){
@@ -80,7 +80,7 @@ function cancelSaveToStorageWithHystersis(key){
     }
 }
 
-function saveToStorageWithHystersis(key, value, hystersisTime=1000){
+function saveToStorageWithHystersis(key, value, hystersisTime=500){
     if (saveToStorageWithHystersis_FirstTime){
         saveToStorageWithHystersis_FirstTime=false;
         window.addEventListener('beforeunload', (e) => {
@@ -89,7 +89,6 @@ function saveToStorageWithHystersis(key, value, hystersisTime=1000){
                 clearTimeout(savePair.timeoutId);
                 try {
                     localStorage.setItem(savePair.key, JSON.stringify(savePair.value));
-                    console.log("saveToStorageWithHystersis_beforeUnload: saved key:",savePair.key," value:", JSON.stringify(savePair.value));
                 } catch {
                     console.error("saveToStorageWithHystersis_beforeUnload: cant save to localStorage key:", savePair.key," value:",savePair.value)
                 }
@@ -107,7 +106,6 @@ function saveToStorageWithHystersis(key, value, hystersisTime=1000){
             saveToStorageWithHystersis_List.splice(existingSaveIndex, 1);
             try {
                 localStorage.setItem(key, JSON.stringify(value));
-                console.log("saveToStorageWithHystersis: saved key:",key," value:", JSON.stringify(value));
             } catch {
                 console.error("saveToStorageWithHystersis: cant save to localStorage key:", key," value:",value)
             }
@@ -147,18 +145,31 @@ function broadcastStorageEvent(originatorId, action, key, newValue){
     }, 0);
 }
 
+
 function useLocalStorageArray(nameSpace, arrayName){
-    const [keyValuePairs, setKeyValuePairs] = useState( () => readLocalStorageKeyValuePairs(nameSpace,arrayName) );
+    const [keyValuePairs, setKeyValuePairs] = useState([]);
     const [subscriberId, setSubscriberId] = useState(null);
     
+    //
+    useEffect( () => {
+        setKeyValuePairs( () => readLocalStorageKeyValuePairs(nameSpace,arrayName) );
+    }, [nameSpace, arrayName]);
+
     //Add item function, call this with a value to create a new item with value. If you want to know what this new key is, pass in a callback function that will get called with the key
     const _addItemInternal = (key, value, cbWhenAdding=(key, value)=>(null))=>{
         setKeyValuePairs( (oldKeyValuePairs) => {
+            //Development mode, check to make sure we dont already have this key. React-dev-tools has a bug that calls setTimeout twice on initial load            
+            if (window.isDevelopment) if (oldKeyValuePairs.find( item => item.key===key )) return oldKeyValuePairs;
+
             if (!key) key = freeKeyFromList(oldKeyValuePairs, nameSpace, arrayName);
-            cbWhenAdding(key, value);
-            return [...oldKeyValuePairs, {key, value}];
+            if (isKeyAMatch(key, nameSpace, arrayName)){
+                cbWhenAdding(key, value);
+                return [...oldKeyValuePairs, {key, value}];
+            }
+            return oldKeyValuePairs;
         });
     }
+
     const addItem = (value, callbackWithNewKey) => {
         _addItemInternal(null, value, (key, value) => {
             saveToStorageWithHystersis(key, value);
@@ -205,54 +216,52 @@ function useLocalStorageArray(nameSpace, arrayName){
 
 
     const _mergeItemInternal = (key, value, cbWhenMerging=(key, newValue)=>(null)) => {
-        const item = keyValuePairs.find( item => item.key===key);
-        if (item){
-            const newValue=Object.assign({...item.value}, value);
-            setKeyValuePairs( (oldKeyValuePairs) => {
-                const index=oldKeyValuePairs.findIndex( kvPair => kvPair.key===key );
-                if (index>=0){
-                    const newKeyValuePairs = [...oldKeyValuePairs];
-                    newKeyValuePairs[index].value=newValue;
-                    cbWhenMerging(key, newValue);
-                    return newKeyValuePairs;
-                }
-                return oldKeyValuePairs;
-            });
-        }
+        setKeyValuePairs( (oldKeyValuePairs) => {
+            const index=oldKeyValuePairs.findIndex( kvPair => kvPair.key===key );
+            if (index>=0){
+                const newValue=Object.assign({...oldKeyValuePairs[index].value}, value);
+                const newKeyValuePairs = [...oldKeyValuePairs];
+                newKeyValuePairs[index].value=newValue;
+                cbWhenMerging(key, newValue);
+                return newKeyValuePairs;
+            }
+            return oldKeyValuePairs;
+        });
     }
     const mergeItem = (key, value) => {
         _mergeItemInternal(key, value, (key, newValue)=>{
             saveToStorageWithHystersis(key, newValue);
-            broadcastStorageEvent(subscriberId, 'merge', key, newValue);
+            broadcastStorageEvent(subscriberId, 'merge', key, value);
         })
     }
 
-    const storageEventCallback = (action, key, value) => {
-        if (!isKeyAMatch(key, nameSpace, arrayName)) return;
-        switch (action){
-            case 'delete':
-                _deleteItemInternal(key);
-                break;
-            case 'add':
-                _addItemInternal(key, value);
-                break;
-            case 'set':
-                _setItemInternal(key, value);
-                break;
-            case 'merge':
-                _mergeItemInternal(key, value);
-                break;
-            default:
-                console.error("storageEventCallback: unknown action ", action);
-        }
-    }
+
 
     
-    useEffect( () => {
+    useEffect( () => {    
+        const storageEventCallback = (action, key, value) => {
+            if (!isKeyAMatch(key, nameSpace, arrayName)) return;
+            switch (action){
+                case 'delete':
+                    _deleteItemInternal(key);
+                    break;
+                case 'add':
+                    _addItemInternal(key, value);
+                    break;
+                case 'set':
+                    _setItemInternal(key, value);
+                    break;
+                case 'merge':
+                    _mergeItemInternal(key, value);
+                    break;
+                default:
+                    console.error("storageEventCallback: unknown action ", action);
+            }
+        }
         const subscriberId = subscribeToStorageEvents(storageEventCallback);
         setSubscriberId(subscriberId);
         return (()=>unsubscribeToStorageEvents(subscriberId))
-    },[])
+    },[nameSpace, arrayName])
 ;
 
     useEffect(() => {
@@ -275,17 +284,7 @@ function useLocalStorageArray(nameSpace, arrayName){
                         console.error("useLocalStorageArray: failed to parse new value");
                     }
                     if (!keyValuePairsIncludes(keyValuePairs, e.key)){//Theres a new key!
-                        setKeyValuePairs( (oldKeyValuePairs) => {
-                            const newKeyValuePairs = [...oldKeyValuePairs, {key: e.key, value: value}];
-
-                            for (let pair of newKeyValuePairs){
-                                const [, , , index] = deconstructArrayKey(pair.key);
-                                pair.index=index;
-                            }
-                            newKeyValuePairs.sort( (a,b) => a.index-b.index);
-
-                            return newKeyValuePairs.map( key => ({key: key.key, value: key.value}) );
-                        });
+                         _addItemInternal(e.key, value);
                     }else{//One of our keys has been changed
                         _setItemInternal(e.key, value);
                     }
@@ -301,24 +300,6 @@ function useLocalStorageArray(nameSpace, arrayName){
 
     return [keyValuePairs, addItem, deleteItem, setItem, mergeItem];
 }
-
-
-// let localStorageEventListeners = [];
-
-// function localStorageAddListener(nameSpace, arrayName, eventCallback){
-//     localStorageEventListeners.push({nameSpace, arrayName, eventCallback});
-// }
-
-// function localStorageRemoveListener(nameSpace, arrayName, eventCallback){
-//     localStorageEventListeners=localStorageEventListeners.filter(i => !(i.nameSpace===nameSpace && i.arrayName===arrayName && i.eventCallback===eventCallback) );
-// }
-
-// //set - an existing item is updated
-// //delete - an existing item is deleted
-// //add - a new item is created
-
-    //Listen for localStorage changes and update our list
-
 
 
 export {useLocalStorageArray};

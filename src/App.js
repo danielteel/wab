@@ -18,13 +18,15 @@ function ItemView({item, setItem, deleteThis, closeThis}){
 }
 
 function App({nameSpace}) {
-    const [keyValuePairs, addItem, deleteItem, setItem, mergeItem] = useLocalStorageArray(nameSpace, 'number-array');
+    const [arrayName, setArrayName]=useState("");
+    const [keyValuePairs, addItem, deleteItem, setItem, mergeItem] = useLocalStorageArray(nameSpace, arrayName);
     const [selectedItem, setSelectedItem] = useState(null);
     if (selectedItem){
         return <ItemView item={selectedItem} setItem={mergeItem} closeThis={()=>setSelectedItem(null)} deleteThis={()=>{deleteItem(selectedItem.key); setSelectedItem(null);}}/>
     }
     return (
         <div className="App" style={{backgroundColor: '#AAAAAA'}}><br/>
+            <input type="text" value={arrayName} onChange={(e)=>setArrayName(e.target.value)}/>
             <button onClick={()=>{
                 console.log("clicked add");
                 addItem({number: 0, name: 'Unnamed'});

@@ -28,6 +28,14 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      if ( ! '%NODE_ENV%' || '%NODE_ENV%' === 'development') {
+        // dev code
+        window.isDevelopment=true;
+      } else {
+        // production code    
+      }
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.
