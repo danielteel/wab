@@ -7,9 +7,7 @@ import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App nameSpace='wab' key={"1"} />
-    <App nameSpace='wab' key={"2"}/>
-    <App nameSpace='wab' key={"3"}/>
+    <App/>
   </React.StrictMode>,
   document.getElementById('root')
 );

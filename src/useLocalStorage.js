@@ -231,7 +231,7 @@ function useLocalStorageArray(nameSpace, arrayName){
     const mergeItem = (key, value) => {
         _mergeItemInternal(key, value, (key, newValue)=>{
             saveToStorageWithHystersis(key, newValue);
-            broadcastStorageEvent(subscriberId, 'merge', key, value);
+            broadcastStorageEvent(subscriberId, 'set', key, newValue);
         })
     }
 
@@ -248,9 +248,6 @@ function useLocalStorageArray(nameSpace, arrayName){
                     break;
                 case 'set':
                     _setItemInternal(key, value);
-                    break;
-                case 'merge':
-                    _mergeItemInternal(key, value);
                     break;
                 default:
                     console.error("storageEventCallback: unknown action ", action);
@@ -291,9 +288,7 @@ function useLocalStorageArray(nameSpace, arrayName){
         };
 
         window.addEventListener('storage', handler);
-        console.log("added storage");
         return () => {
-            console.log("removed storage");
             window.removeEventListener('storage', handler);
         };
     }, [nameSpace, arrayName, keyValuePairs]);
@@ -302,61 +297,136 @@ function useLocalStorageArray(nameSpace, arrayName){
 }
 
 
-function useLocalStorage(nameSpace, itemName=null){
-    let storageKey;
-    if (!itemName){
-        storageKey = nameSpace;
-    }else{
-        if (nameSpace.includes('$')) throw Error("useLocalStorage: nameSpace should not include any $'s");
-        if (itemName.includes('$')) throw Error("useLocalStorage: itemName should not include any $'s");
-        storageKey = nameSpace+"$"+itemName;
-    }
+// function useLocalStorage(nameSpace, itemName=null){
+//     let storageKey;
+//     if (!itemName){
+//         storageKey = nameSpace;
+//     }else{
+//         if (nameSpace.includes('$')) throw Error("useLocalStorage: nameSpace should not include any $'s");
+//         if (itemName.includes('$')) throw Error("useLocalStorage: itemName should not include any $'s");
+//         storageKey = nameSpace+"$"+itemName;
+//     }
     
-    const [value, setValue]=useState(null);
-    const [subscriberId, setSubscriberId] = useState(null);
+//     const [subscriberId, setSubscriberId] = useState(null);
+//     const [value, setValue]=useState(null);
+
+//     useEffect( () => {
+//         setValue( ()=>{
+//             const storedValue=localStorage.getItem(storageKey);
+//             try {
+//                 return JSON.parse(storedValue);
+//             } catch {
+//                 return null;
+//             }
+//         });
+//     }, [storageKey]);
+
+//     const _setThisValueInternal = (value, cbWhenSetting=(value)=>(null)) => {
+//         setValue( () => {
+//             cbWhenSetting(value);
+//             return value;
+//         });
+//     }
+//     const setThisValue = (value) => {
+//         _setThisValueInternal(value, (value) => {
+//             saveToStorageWithHystersis(storageKey, value);
+//             broadcastStorageEvent(subscriberId, 'set', storageKey, value);
+//         })
+//     }
+
+//     const _mergeThisValueInternal = (valueToMerge, cbWhenMerging=(newValue)=>(null)) => {
+//         setValue( (oldValue) => {
+//             const newValue = Object.assign({...oldValue}, valueToMerge);
+//             cbWhenMerging(newValue);
+//             return newValue;
+//         });
+//     }
+//     const mergeThisValue = (value) => {
+//         _mergeThisValueInternal(value, (newValue) => {
+//             saveToStorageWithHystersis(storageKey, newValue);
+//             broadcastStorageEvent(subscriberId, 'set', storageKey, newValue);
+//         })
+//     }
+
+//     const _deleteThisInternal = (cbWhenDeleting=()=>(null)) =>{
+//             setValue( () => {
+//                 cbWhenDeleting();
+//                 return null;
+//             });
+//     }
+    
+//     const deleteThis = () => {
+//         _deleteThisInternal( () => {
+//             cancelSaveToStorageWithHystersis(storageKey);
+//             localStorage.removeItem(storageKey);
+//             broadcastStorageEvent(subscriberId, 'delete', storageKey, null);
+//         });
+//     }
+
+//     useEffect( ()=>{  
+//         const storageEventCallback = (action, key, value) => {
+//             if (key!==storageKey) return;
+//             switch (action){
+//                 case 'delete':
+//                     _deleteThisInternal();
+//                     break;
+//                 case 'set':
+//                     _setThisValueInternal(value);
+//                     break;
+//                 default:
+//                     console.error("storageEventCallback: unknown action ", action);
+//             }
+//         }
+//         const subscriberId = subscribeToStorageEvents(storageEventCallback);
+//         setSubscriberId(subscriberId);
+//         return (()=>unsubscribeToStorageEvents(subscriberId))
+//     },[storageKey])
+
+//     useEffect(() => {
+//         const handler = (e) => {
+            
+//             if (e.storageArea!==localStorage) return;
+
+//             if (e.key===null){//All keys have been cleared
+//                 setValue( ()=>{
+//                     const storedValue=localStorage.getItem(storageKey);
+//                     try {
+//                         return JSON.parse(storedValue);
+//                     } catch {
+//                         return null;
+//                     }
+//                 });
+
+//             } else if (e.newValue===null && keyValuePairsIncludes(keyValuePairs, e.key)){//key has been deleted
+//                 _deleteThisInternal(e.key);
+                
+//             } else if (e.key){
+//                 if (isKeyAMatch(e.key, nameSpace, arrayName)){//Key added or changed
+//                     let value=null;
+//                     try {
+//                         value=JSON.parse(e.newValue);
+//                     } catch {
+//                         console.error("useLocalStorageArray: failed to parse new value");
+//                     }
+//                     if (!keyValuePairsIncludes(keyValuePairs, e.key)){//Theres a new key!
+//                          _addItemInternal(e.key, value);
+//                     }else{//One of our keys has been changed
+//                         _setItemInternal(e.key, value);
+//                     }
+//                 }
+//             }
+//         };
+
+//         window.addEventListener('storage', handler);
+//         console.log("added storage");
+//         return () => {
+//             console.log("removed storage");
+//             window.removeEventListener('storage', handler);
+//         };
+//     }, [storageKey]);
+
+//     return [value, setThisValue, mergeThisValue, deleteThis];
+// }
 
 
-    const setThisValue = (newValue) => {
-        setValue( () => newValue );
-    }
-    const mergeThisValue = (valueToMerge) => {
-        setValue( (oldValue) => Object.assign({...oldValue}, valueToMerge) );
-    }
-    const deleteThis = () => {
-        setValue( () => null );
-        
-        cancelSaveToStorageWithHystersis(storageKey);
-        localStorage.removeItem(storageKey);
-        broadcastStorageEvent(subscriberId, 'delete', storageKey, null);
-    }
-
-    useEffect( ()=>{  
-        const storageEventCallback = (action, key, value) => {
-            if (key!==storageKey) return;
-            switch (action){
-                case 'delete':
-                    _deleteItemInternal(key);
-                    break;
-                case 'add':
-                    _addItemInternal(key, value);
-                    break;
-                case 'set':
-                    _setItemInternal(key, value);
-                    break;
-                case 'merge':
-                    _mergeItemInternal(key, value);
-                    break;
-                default:
-                    console.error("storageEventCallback: unknown action ", action);
-            }
-        }
-        const subscriberId = subscribeToStorageEvents(storageEventCallback);
-        setSubscriberId(subscriberId);
-        return (()=>unsubscribeToStorageEvents(subscriberId))
-    },[storageKey])
-
-    return [value, setThisValue, mergeThisValue, deleteThis];
-}
-
-
-export {useLocalStorageArray, useLocalStorage};
+export {useLocalStorageArray};

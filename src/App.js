@@ -2,41 +2,28 @@ import NumberPad from './components/NumberPad';
 import React, { useEffect, useRef, useState } from 'react';
 
 import {useLocalStorageArray} from './useLocalStorage';
+import WABMenu from './components/WABMenu';
+import FormFs from './components/FormFs';
+import { Container, Header, Segment } from 'semantic-ui-react';
 
+function App(){
+    const [selectedMenu, setSelectedMenu]=useState("formfs");
 
-function ItemView({item, setItem, deleteThis, closeThis}){
-    return <div style={{margin:"10px"}}>
-        <input type='text' value={item.value.name} onChange={(e)=>setItem(item.key, {name: e.target.value})}/>
-        <br/>
-        <button onClick={()=>setItem(item.key, {number: item.value.number-1})}>-</button>
-        <input type='text' size={3} value={item.value.number}/>
-        <button onClick={()=>setItem(item.key, {number: item.value.number+1})}>+</button>
-        <br/>
-        <button onClick={()=>deleteThis()}>Delete</button>
-        <button onClick={()=>closeThis()}>Close</button>
-    </div>
-}
-
-function App({nameSpace}) {
-    const [arrayName, setArrayName]=useState("");
-    const [keyValuePairs, addItem, deleteItem, setItem, mergeItem] = useLocalStorageArray(nameSpace, arrayName);
-    const [selectedItem, setSelectedItem] = useState(null);
-    if (selectedItem){
-        return <ItemView item={selectedItem} setItem={mergeItem} closeThis={()=>setSelectedItem(null)} deleteThis={()=>{deleteItem(selectedItem.key); setSelectedItem(null);}}/>
+    let screenToRender=null;
+    switch(selectedMenu){
+        case 'formfs':
+            screenToRender=<FormFs/>
+            break;
+        default:
+            break;
     }
+
     return (
-        <div className="App" style={{backgroundColor: '#AAAAAA'}}><br/>
-            <input type="text" value={arrayName} onChange={(e)=>setArrayName(e.target.value)}/>
-            <button onClick={()=>{
-                console.log("clicked add");
-                addItem({number: 0, name: 'Unnamed'});
-            }}>New item</button>
-            {
-                keyValuePairs.map( pair => <button onClick={()=>{
-                    setSelectedItem(pair);
-                }}>{pair.value?.name+" "+pair.value?.number}</button>)
-            }
-        </div>
+        <Container>
+            <Segment attached="top"><Header textAlign="center">WAB</Header></Segment>
+            <WABMenu selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
+            <Segment attached="bottom">{screenToRender}</Segment>
+        </Container>
     );
 }
 
