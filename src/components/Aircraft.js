@@ -1,7 +1,7 @@
 import { useLocalStorageArray } from "../useLocalStorage"
 
 import {Button, Table, Modal, Input, Form, Header} from 'semantic-ui-react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import ConfirmationModal from "./ConfirmationModal";
 
@@ -38,10 +38,45 @@ function NewAircraftModal({onAdd, onCloseModal, isOpen}){
     )
 }
 
+function EditAircraftModal({onEdit, onCloseModal, aircraft}){
+    const [tail, setTail] = useState(aircraft?.value.tail);
+    const [weight, setWeight] = useState(aircraft?.value.weight);
+    const [moment, setMoment] = useState(aircraft?.value.moment);
+
+    useEffect( ()=>{
+        setTail( () => aircraft?.value.tail );
+        setWeight( ()=> aircraft?.value.weight );
+        setMoment( () => aircraft?.value.moment );
+    },[aircraft])
+
+    return (
+        <Modal open={!!aircraft} size="tiny">
+            <Modal.Header>Edit Aircraft</Modal.Header>
+            <Modal.Content>
+                <Modal.Description>
+                    <Form>
+                        <Form.Field value={tail} onChange={(e)=>setTail(e.target.value)} control={Input} label='Tail' placeholder='Tail'/>
+                        <Form.Field value={weight} onChange={(e)=>setWeight(e.target.value)} control={Input} label='Weight' placeholder='Weight'/>
+                        <Form.Field value={moment} onChange={(e)=>setMoment(e.target.value)}control={Input} label='Moment' placeholder='Moment'/>
+                    </Form>
+                </Modal.Description>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button color='black' content={"Cancel"} onClick={onCloseModal}/>
+                <Button primary content={"Save"} onClick={()=>{
+                    onEdit(aircraft.key, {tail, weight, moment});
+                    onCloseModal();
+                }}/>
+            </Modal.Actions>
+      </Modal>
+    )
+}
+
 export default function Aircraft(){
     const [aircraft, addAircraft, deleteAircraft, setAircraft, mergeAircraft] = useLocalStorageArray('wab','aircraft');
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [deleteModalKey, setDeleteModalKey]=useState(null);
+    const [editAircraft, setEditAircraft] = useState(null);
     return (
         <>
             <ConfirmationModal  title={"Are you sure you want to delete this?"}
@@ -53,6 +88,7 @@ export default function Aircraft(){
                                 onNo={()=>{
                                     setDeleteModalKey(null)
                                 }}/>
+            <EditAircraftModal onEdit={setAircraft} onCloseModal={()=>setEditAircraft(null)} aircraft={editAircraft}/>
             <NewAircraftModal onAdd={addAircraft} onCloseModal={()=>setAddModalOpen(false)} isOpen={addModalOpen}/>
             <Table selectable unstackable>
             <Table.Header>
@@ -88,6 +124,7 @@ export default function Aircraft(){
                             </Table.Cell>
                             <Table.Cell>
                                 <Button floated='right' icon='minus' negative size='tiny' onClick={()=>setDeleteModalKey(aircraft.key)}/>
+                                <Button floated='right' icon='edit' primary size='tiny' onClick={()=>setEditAircraft(aircraft)}/>
                             </Table.Cell>
                         </Table.Row>
                 );

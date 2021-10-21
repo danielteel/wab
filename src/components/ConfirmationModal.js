@@ -2,7 +2,7 @@ import {Modal, Header, Button} from 'semantic-ui-react';
 
 export default function ConfirmationModal({onYes, onNo, isOpen, title, content}){
     return (
-        <Modal onClose={onNo} open={isOpen} size="tiny">
+        <Modal open={isOpen} size="tiny">
         {
             content
             ?
