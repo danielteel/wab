@@ -10,7 +10,19 @@ function newFormFObj(){
             tail:"0046",
             weight:35495,
             moment:14101
-        }
+        },
+        crew:{
+            weight: 660,
+            moment:151.5
+        },
+        kit:[],
+        fuel:[
+            {
+                weight:7500,
+                moment:2000
+            }
+        ],
+        cargo:[]
     };
 }
 

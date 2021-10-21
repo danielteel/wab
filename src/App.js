@@ -1,10 +1,10 @@
 import NumberPad from './components/NumberPad';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { Container, Header, Segment } from 'semantic-ui-react';
 
-import {useLocalStorageArray} from './useLocalStorage';
 import WABMenu from './components/WABMenu';
 import FormFs from './components/FormFs';
-import { Container, Header, Segment } from 'semantic-ui-react';
+import Aircraft from './components/Aircraft';
 
 function App(){
     const [selectedMenu, setSelectedMenu]=useState("formfs");
@@ -13,6 +13,9 @@ function App(){
     switch(selectedMenu){
         case 'formfs':
             screenToRender=<FormFs/>
+            break;
+        case 'aircraft':
+            screenToRender=<Aircraft/>
             break;
         default:
             break;
