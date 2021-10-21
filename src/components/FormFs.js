@@ -1,6 +1,7 @@
 import { useState } from "react/cjs/react.development";
 import { Button, Modal, Header, Table} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
+import ConfirmationModal from "./ConfirmationModal";
 
 function newFormFObj(){
     return {
@@ -26,28 +27,7 @@ function newFormFObj(){
     };
 }
 
-function ConfirmationModal({onYes, onNo, isOpen, title, content}){
-    return (
-        <Modal onClose={onNo} open={isOpen} size="tiny">
-        {
-            content
-            ?
-                <Modal.Header>{title}</Modal.Header>
-            :
-            null
-        }
-        <Modal.Content>
-          <Modal.Description>
-              {content?content:<Header>{title}</Header>}
-          </Modal.Description>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button color='black' content={"No"} onClick={onNo}/>
-          <Button positive content={"Yes"} onClick={onYes}/>
-        </Modal.Actions>
-      </Modal>
-    )
-}
+
 
 
 
