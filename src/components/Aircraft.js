@@ -123,8 +123,8 @@ export default function Aircraft(){
                                 {aircraft.value.moment/aircraft.value.weight}
                             </Table.Cell>
                             <Table.Cell>
-                                <Button floated='right' icon='minus' negative size='tiny' onClick={()=>setDeleteModalKey(aircraft.key)}/>
-                                <Button floated='right' icon='edit' primary size='tiny' onClick={()=>setEditAircraft(aircraft)}/>
+                                <Button floated='right' icon='minus' negative size='small' onClick={()=>setDeleteModalKey(aircraft.key)}/>
+                                <Button floated='right' icon='pencil' primary size='small' onClick={()=>setEditAircraft(aircraft)}/>
                             </Table.Cell>
                         </Table.Row>
                 );

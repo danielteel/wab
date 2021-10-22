@@ -4,6 +4,7 @@ import { Container, Header, Segment } from 'semantic-ui-react';
 import WABMenu from './components/WABMenu';
 import FormFs from './components/FormFs';
 import Aircraft from './components/Aircraft';
+import StandardKitOrCargo from './components/StandardKitOrCargo';
 
 function App(){
     const [selectedMenu, setSelectedMenu]=useState("formfs");
@@ -15,6 +16,12 @@ function App(){
             break;
         case 'aircraft':
             screenToRender=<Aircraft/>
+            break;
+        case 'standardkit':
+            screenToRender=<StandardKitOrCargo isKit/>
+            break;
+        case 'standardcargo':
+            screenToRender=<StandardKitOrCargo/>
             break;
         default:
             break;
