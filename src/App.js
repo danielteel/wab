@@ -1,4 +1,3 @@
-import NumberPad from './components/NumberPad';
 import React, { useState } from 'react';
 import { Container, Header, Segment } from 'semantic-ui-react';
 

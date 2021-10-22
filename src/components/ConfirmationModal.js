@@ -8,7 +8,7 @@ export default function ConfirmationModal({onYes, onNo, isOpen, title, content})
             ?
                 <Modal.Header>{title}</Modal.Header>
             :
-            null
+                null
         }
         <Modal.Content>
           <Modal.Description>

@@ -1,7 +1,8 @@
 import { useState } from "react/cjs/react.development";
-import { Button, Modal, Header, Table} from "semantic-ui-react";
+import { Button, Table} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
 import ConfirmationModal from "./ConfirmationModal";
+import FormF from "./FormF";
 
 function newFormFObj(){
     return {
@@ -29,11 +30,14 @@ function newFormFObj(){
 
 
 
-
-
 export default function FormFs(){
-    const [formFs, addFormF, deleteFormF, setFormF, mergeFormF] = useLocalStorageArray('wab','formfs');
+    const [formFs, addFormF, deleteFormF, , mergeFormF] = useLocalStorageArray('wab','formfs');
     const [deleteModalKey, setDeleteModalKey]=useState(null);
+    const [selectedFormF, setSelectedFormF]=useState(null);
+
+    if (!!selectedFormF){
+        return <FormF formF={selectedFormF.value} mergeFormF={(value)=>mergeFormF(selectedFormF.key, value)} close={()=>setSelectedFormF(null)}/>
+    }
     return (
         <>
         <ConfirmationModal  title={"Are you sure you want to delete this?"}
@@ -76,6 +80,7 @@ export default function FormFs(){
                             <Table.Cell>
                                 <Button floated='right' icon='minus' negative size='tiny' onClick={()=>setDeleteModalKey(formF.key)}/>
                                 <Button floated='right' icon='copy' primary size='tiny' onClick={()=>addFormF(newFormFObj())}/>
+                                <Button floated='right' icon='edit' primary size='tiny' onClick={()=>setSelectedFormF(formF)}/>
                             </Table.Cell>
                         </Table.Row>
                 );

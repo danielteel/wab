@@ -1,6 +1,6 @@
 import { useLocalStorageArray } from "../useLocalStorage"
 
-import {Button, Table, Modal, Input, Form, Header} from 'semantic-ui-react';
+import {Button, Table, Modal, Input, Form} from 'semantic-ui-react';
 import { useState, useEffect } from "react";
 
 import ConfirmationModal from "./ConfirmationModal";
@@ -20,7 +20,7 @@ function NewAircraftModal({onAdd, onCloseModal, isOpen}){
                     <Form>
                         <Form.Field value={tail} onChange={(e)=>setTail(e.target.value)} control={Input} label='Tail' placeholder='Tail'/>
                         <Form.Field value={weight} onChange={(e)=>setWeight(e.target.value)} control={Input} label='Weight' placeholder='Weight'/>
-                        <Form.Field value={moment} onChange={(e)=>setMoment(e.target.value)}control={Input} label='Moment' placeholder='Moment'/>
+                        <Form.Field value={moment} onChange={(e)=>setMoment(e.target.value)} control={Input} label='Moment' placeholder='Moment'/>
                     </Form>
                 </Modal.Description>
             </Modal.Content>
@@ -73,7 +73,7 @@ function EditAircraftModal({onEdit, onCloseModal, aircraft}){
 }
 
 export default function Aircraft(){
-    const [aircraft, addAircraft, deleteAircraft, setAircraft, mergeAircraft] = useLocalStorageArray('wab','aircraft');
+    const [aircraft, addAircraft, deleteAircraft, setAircraft] = useLocalStorageArray('wab','aircraft');
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [deleteModalKey, setDeleteModalKey]=useState(null);
     const [editAircraft, setEditAircraft] = useState(null);
