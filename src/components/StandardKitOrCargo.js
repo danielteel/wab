@@ -1,6 +1,6 @@
 import { Button, Header, List } from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage";
-
+import KOrCItem from "./KorCItem";
 
 export default function StandardKitOrCargo({isKit}){
     let arrayToUse='kit';
@@ -16,7 +16,8 @@ export default function StandardKitOrCargo({isKit}){
         <List>
             {
                 items.map( item => {
-                    return <List.Item>{item.value.name}</List.Item>
+
+                    return <List.Item><KOrCItem item={item} setItem={setItem} mergeItem={mergeItem} deleteItem={deleteItem}/></List.Item>
                 })
             }
         </List>
