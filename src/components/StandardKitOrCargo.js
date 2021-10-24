@@ -1,4 +1,4 @@
-import { Button, Header, List } from "semantic-ui-react";
+import { Button, Header, List, Table } from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage";
 import KOrCItem from "./KorCItem";
 
@@ -10,16 +10,30 @@ export default function StandardKitOrCargo({isKit}){
 
     return (<>
         <Header textAlign='center'>Standard {isKit?"Kit":"Cargo"}</Header>
-        <Button onClick={()=>{
-            addItem({name:'hi',weight:100, moment: 50})
-        }}>New</Button>
-        <List>
-            {
-                items.map( item => {
 
-                    return <List.Item><KOrCItem item={item} setItem={setItem} mergeItem={mergeItem} deleteItem={deleteItem}/></List.Item>
-                })
-            }
-        </List>
+        <Table unstackable compact celled>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell colSpan={4}>
+                        <Button content='New item' icon='add' labelPosition='left' positive size='small'  floated='left' onClick={()=>{
+                            addItem({name:'',weight:0, moment: 0})
+                        }}/>
+                    </Table.HeaderCell>
+                </Table.Row>
+                <Table.Row>
+                    <Table.HeaderCell width={7}>Name</Table.HeaderCell>  
+                    <Table.HeaderCell width={3}>Weight</Table.HeaderCell>  
+                    <Table.HeaderCell width={3}>Arm</Table.HeaderCell>  
+                    <Table.HeaderCell width={3}>Mom</Table.HeaderCell>  
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {
+                    items.map( item => {
+                        return <KOrCItem item={item} setItem={setItem} mergeItem={mergeItem} deleteItem={deleteItem}/>
+                    })
+                }
+            </Table.Body>
+        </Table>
     </>);
 }

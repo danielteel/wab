@@ -1,6 +1,6 @@
 import { useLocalStorageArray } from "../useLocalStorage"
 
-import {Button, Table, Modal, Input, Form} from 'semantic-ui-react';
+import {Button, Table, Modal, Input, Form, Header} from 'semantic-ui-react';
 import { useState, useEffect } from "react";
 
 import ConfirmationModal from "./ConfirmationModal";
@@ -20,7 +20,7 @@ function NewAircraftModal({onAdd, onCloseModal, isOpen}){
                     <Form>
                         <Form.Field value={tail} onChange={(e)=>setTail(e.target.value)} control={Input} label='Tail' placeholder='Tail'/>
                         <Form.Field value={weight} onChange={(e)=>setWeight(e.target.value)} control={Input} label='Weight' placeholder='Weight'/>
-                        <Form.Field value={moment} onChange={(e)=>setMoment(e.target.value)} control={Input} label='Moment' placeholder='Moment'/>
+                        <Form.Field value={moment} onChange={(e)=>setMoment(e.target.value)} control={Input} label='Mom' placeholder='Moment'/>
                     </Form>
                 </Modal.Description>
             </Modal.Content>
@@ -90,11 +90,13 @@ export default function Aircraft(){
                                 }}/>
             <EditAircraftModal onEdit={setAircraft} onCloseModal={()=>setEditAircraft(null)} aircraft={editAircraft}/>
             <NewAircraftModal onAdd={addAircraft} onCloseModal={()=>setAddModalOpen(false)} isOpen={addModalOpen}/>
+            
+            <Header textAlign='center'>Aircraft</Header>
             <Table selectable unstackable>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell colSpan='5'>
-                    <Button floated='left' icon='add square' labelPosition='left' positive size='small' content='New Aircraft' onClick={()=>setAddModalOpen(true)}/>
+                    <Button floated='left' icon='add' labelPosition='left' positive size='small' content='New Aircraft' onClick={()=>setAddModalOpen(true)}/>
                     </Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>

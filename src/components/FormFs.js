@@ -1,5 +1,5 @@
 import { useState } from "react/cjs/react.development";
-import { Button, Table} from "semantic-ui-react";
+import { Button, Table, Header} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
 import ConfirmationModal from "./ConfirmationModal";
 import FormF from "./FormF";
@@ -49,11 +49,13 @@ export default function FormFs(){
                              onNo={()=>{
                                 setDeleteModalKey(null)
                             }}/>
+                            
+        <Header textAlign='center'>Form Fs</Header>
         <Table selectable unstackable>
           <Table.Header>
               <Table.Row>
                   <Table.HeaderCell colSpan='4'>
-                    <Button floated='left' icon='add square' labelPosition='left' positive size='small' content='New Form F'  onClick={()=>addFormF(newFormFObj())}/>
+                    <Button floated='left' icon='add' labelPosition='left' positive size='small' content='New Form F'  onClick={()=>addFormF(newFormFObj())}/>
                   </Table.HeaderCell>
               </Table.Row>
               <Table.Row>
