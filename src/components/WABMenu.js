@@ -3,9 +3,9 @@ import { Menu } from "semantic-ui-react";
 export default function WABMenu({setSelectedMenu, selectedMenu}){
     const menuItems=[
         {id:'formfs', title: 'Form Fs'},
-        {id:'standardkit', title:'Standard Kit'},
-        {id:'standardcargo', title:'Standard Cargo'},
-        {id:'aircraft', title:'Aircraft'}
+        {id:'aircraft', title:'Aircraft'},
+        {id:'standardkit', title:'Kit'},
+        {id:'standardcargo', title:'Cargo'}
     ]
 
     return (

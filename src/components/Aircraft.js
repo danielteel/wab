@@ -4,6 +4,7 @@ import {Button, Table, Modal, Input, Form, Header} from 'semantic-ui-react';
 import { useState, useEffect } from "react";
 
 import ConfirmationModal from "./ConfirmationModal";
+import { formatArm } from "../common";
 
 
 
@@ -122,7 +123,7 @@ export default function Aircraft(){
                                 {aircraft.value.moment}
                             </Table.Cell>
                             <Table.Cell>
-                                {aircraft.value.moment/aircraft.value.weight}
+                                {formatArm(aircraft.value.moment/aircraft.value.weight*1000)}
                             </Table.Cell>
                             <Table.Cell>
                                 <Button floated='right' icon='minus' negative size='small' onClick={()=>setDeleteModalKey(aircraft.key)}/>

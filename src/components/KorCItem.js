@@ -1,29 +1,12 @@
 import { useEffect, useState } from "react";
 import { Input, Table, Button } from "semantic-ui-react";
+import { formatArm, formatWeight, formatMoment, realNumber } from "../common";
+const noPadCell={padding:'0px'};
+const noBorderInput={style:{border:'0px'}};
 
-const noPadCell={paddingLeft: '2px', paddingRight:'2px'};
 
-function realNumber(string){
-    let real = Number(string);
-    if (!isFinite(real)) real=0;
-    return real;
-}
 
-function formatArm(arm){
-    arm=realNumber(arm);
-    return Math.round(arm*10)/10;
-}
-
-function formatWeight(weight){
-    weight=realNumber(weight);
-    return Math.round(weight*10)/10;
-}
-
-function formatMoment(moment){
-    return Math.round(moment*1000)/1000;
-}
-
-export default function KOrCItem({item, mergeItem}){
+export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef}){
     const [name, setName] = useState('');
     const [weight, setWeight] = useState('');
     const [arm, setArm] = useState('');
@@ -68,56 +51,66 @@ export default function KOrCItem({item, mergeItem}){
     return (
         <Table.Row>
             <Table.Cell style={noPadCell}>
-                <Input
-                fluid
-                transparent
-                type='text'
-                placeholder='Name'
-                value={name}
-                onChange={(e)=>setName(e.target.value)}
-                onBlur={saveName}
-                onKeyPress={e => {if (e.key === 'Enter') saveName()}}
-                />
+                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
+                    <Input
+                    ref={firstBoxRef}
+                    fluid
+                    type='text'
+                    placeholder='Name'
+                    value={name}
+                    onChange={(e)=>setName(e.target.value)}
+                    onBlur={saveName}
+                    onKeyPress={e => {if (e.key === 'Enter') saveName()}}
+                    input={noBorderInput}
+                    />
+                </form>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                <Input
-                fluid
-                transparent
-                type='text'
-                placeholder='Weight'
-                value={weight}
-                onChange={(e)=>setWeight(e.target.value)}
-                onBlur={saveWeight}
-                onKeyPress={e => {if (e.key === 'Enter') saveWeight()}}
-                />
+                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
+                    <Input
+                    fluid
+                    type='text'
+                    placeholder='Weight'
+                    value={weight}
+                    onChange={(e)=>setWeight(e.target.value)}
+                    onBlur={saveWeight}
+                    onKeyPress={e => {if (e.key === 'Enter') saveWeight()}}
+                    input={noBorderInput}
+                    />
+                </form>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                <Input
-                fluid
-                transparent
-                type='text'
-                placeholder='Arm'
-                value={arm}
-                onChange={(e)=>setArm(e.target.value)}
-                onBlur={saveArm}
-                onKeyPress={e => {if (e.key === 'Enter') saveArm()}}
-                />
+                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
+                    <Input
+                    fluid
+                    type='text'
+                    placeholder='Arm'
+                    value={arm}
+                    onChange={(e)=>setArm(e.target.value)}
+                    onBlur={saveArm}
+                    onKeyPress={e => {if (e.key === 'Enter') saveArm()}}
+                    input={noBorderInput}
+                    />
+                </form>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                <Input
-                fluid
-                transparent
-                type='text'
-                placeholder='Moment'
-                value={moment}
-                onChange={(e)=>setMoment(e.target.value)}
-                onBlur={saveMoment}
-                onKeyPress={e => {if (e.key === 'Enter') saveMoment()}}
-                />
+                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
+                    <Input
+                    fluid
+                    type='text'
+                    placeholder='Moment'
+                    value={moment}
+                    onChange={(e)=>setMoment(e.target.value)}
+                    onBlur={saveMoment}
+                    onKeyPress={e => {if (e.key === 'Enter') saveMoment()}}
+                    input={noBorderInput}
+                    />
+                </form>
             </Table.Cell>
             <Table.Cell>
-                
-                <Button floated='right' icon='minus' negative size='small' />
+                <Button.Group size='mini'>
+                    <Button icon='minus' negative onClick={()=>deleteItem(item.key)}/>
+                </Button.Group>
             </Table.Cell>
         </Table.Row>
     );
