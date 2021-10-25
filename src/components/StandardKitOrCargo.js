@@ -1,4 +1,4 @@
-import { Button, Header, List, Table } from "semantic-ui-react";
+import { Button, Header, Table } from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage";
 import KOrCItem from "./KorCItem";
 
