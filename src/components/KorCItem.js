@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Input, Table } from "semantic-ui-react";
+import { Input, Table, Button } from "semantic-ui-react";
 
 const noPadCell={paddingLeft: '2px', paddingRight:'2px'};
 
@@ -114,6 +114,10 @@ export default function KOrCItem({item, mergeItem}){
                 onBlur={saveMoment}
                 onKeyPress={e => {if (e.key === 'Enter') saveMoment()}}
                 />
+            </Table.Cell>
+            <Table.Cell>
+                
+                <Button floated='right' icon='minus' negative size='small' />
             </Table.Cell>
         </Table.Row>
     );

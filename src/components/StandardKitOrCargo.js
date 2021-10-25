@@ -1,4 +1,4 @@
-import { Button, Header, Table } from "semantic-ui-react";
+import { Button, Header, Tab, Table } from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage";
 import KOrCItem from "./KorCItem";
 
@@ -21,10 +21,11 @@ export default function StandardKitOrCargo({isKit}){
                     </Table.HeaderCell>
                 </Table.Row>
                 <Table.Row>
-                    <Table.HeaderCell width={7}>Name</Table.HeaderCell>  
+                    <Table.HeaderCell width={5}>Name</Table.HeaderCell>  
                     <Table.HeaderCell width={3}>Weight</Table.HeaderCell>  
                     <Table.HeaderCell width={3}>Arm</Table.HeaderCell>  
-                    <Table.HeaderCell width={3}>Mom</Table.HeaderCell>  
+                    <Table.HeaderCell width={3}>Mom</Table.HeaderCell>
+                    <Table.HeaderCell width={2}></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
