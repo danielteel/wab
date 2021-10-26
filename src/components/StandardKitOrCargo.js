@@ -32,7 +32,7 @@ export default function StandardKitOrCargo({isKit}){
     return (<>
         <Header textAlign='center'>{isKit?"Kit":"Cargo"}</Header>
 
-        <Table unstackable compact celled>
+        <Table unstackable compact celled selectable>
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell colSpan={5}>

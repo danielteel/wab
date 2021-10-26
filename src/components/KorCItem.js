@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input, Table, Button } from "semantic-ui-react";
-import { formatArm, formatWeight, formatMoment, realNumber } from "../common";
+import { formatArm, formatWeight, formatMoment, realNumber, momentSimplifier } from "../common";
 const noPadCell={padding:'0px'};
 const noBorderInput={style:{border:'0px'}};
 
@@ -20,7 +20,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef}){
 
     const saveWeight = () => {
         if (String(arm).trim()!==""){
-            const newMoment = formatMoment(realWeight*realArm/1000);
+            const newMoment = formatMoment(realWeight*realArm/momentSimplifier);
             mergeItem(item.key, {weight: realWeight, moment: newMoment});
         }else{
             mergeItem(item.key, {weight: realWeight});
@@ -33,7 +33,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef}){
         if (String(realMoment)!==String(moment).trim()) setMoment(realMoment);
     }
     const saveArm = () => {
-        const newMoment = formatMoment(item.value.weight * realArm / 1000);
+        const newMoment = formatMoment(item.value.weight * realArm / momentSimplifier);
         mergeItem(item.key, {moment: newMoment});
         if (String(realArm)!==String(arm).trim()) setArm(realArm);
     }
@@ -41,7 +41,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef}){
     useEffect(()=>{
         setWeight(realNumber(item.value.weight));
         setMoment(formatMoment(item.value.moment));
-        setArm(formatArm(item.value.moment/item.value.weight*1000));
+        setArm(formatArm(item.value.moment/item.value.weight*momentSimplifier));
     }, [item.value.weight, item.value.moment])
 
     useEffect(()=>{

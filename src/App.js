@@ -5,6 +5,8 @@ import WABMenu from './components/WABMenu';
 import FormFs from './components/FormFs';
 import Aircraft from './components/Aircraft';
 import StandardKitOrCargo from './components/StandardKitOrCargo';
+import Workpad from './components/Workpad';
+import { momentSimplifier } from './common';
 
 function App(){
     const [selectedMenu, setSelectedMenu]=useState("formfs");
@@ -23,6 +25,9 @@ function App(){
         case 'standardcargo':
             screenToRender=<StandardKitOrCargo/>
             break;
+        case 'workpad':
+            screenToRender=<Workpad/>
+            break;
         default:
             break;
     }
@@ -32,6 +37,9 @@ function App(){
             <Segment attached="top"><Header textAlign="center">WAB</Header></Segment>
             <WABMenu selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
             <Segment attached="bottom">{screenToRender}</Segment>
+            <Header as='h6' textAlign='center'>
+                Moment Simplifier {momentSimplifier}
+            </Header>
         </Container>
     );
 }

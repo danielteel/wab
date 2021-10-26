@@ -5,7 +5,8 @@ export default function WABMenu({setSelectedMenu, selectedMenu}){
         {id:'formfs', title: 'Form Fs'},
         {id:'aircraft', title:'Aircraft'},
         {id:'standardkit', title:'Kit'},
-        {id:'standardcargo', title:'Cargo'}
+        {id:'standardcargo', title:'Cargo'},
+        {id:'workpad', title:'Workpad'}
     ]
 
     return (

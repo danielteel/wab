@@ -112,7 +112,7 @@ export default function Aircraft(){
             <Table.Body>
             {aircraft.map( aircraft => {
                 return (
-                        <Table.Row>
+                        <Table.Row key={"aircraftlist-"+aircraft.key}>
                             <Table.Cell>
                                 {aircraft.value.tail}
                             </Table.Cell>
