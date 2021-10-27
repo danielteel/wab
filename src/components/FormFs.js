@@ -2,14 +2,14 @@ import { useState } from "react/cjs/react.development";
 import { Button, Table, Header} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
 import ConfirmationModal from "./ConfirmationModal";
-import FormF from "./FormF";
+import Workdpad from "./Workpad";
 
 function newFormFObj(){
     return {
         created: (new Date()).toDateString(),
         name:"untitled",
         aircraft:{
-            tail:"0046",
+            tail:"",
             weight:35495,
             moment:14101
         },
@@ -36,7 +36,7 @@ export default function FormFs(){
     const [selectedFormF, setSelectedFormF]=useState(null);
 
     if (!!selectedFormF){
-        return <FormF formF={selectedFormF.value} mergeFormF={(value)=>mergeFormF(selectedFormF.key, value)} close={()=>setSelectedFormF(null)}/>
+        return <Workdpad formF={selectedFormF.value} mergeFormF={(value)=>mergeFormF(selectedFormF.key, value)} close={()=>setSelectedFormF(null)}/>
     }
     return (
         <>
@@ -81,7 +81,7 @@ export default function FormFs(){
                             </Table.Cell>
                             <Table.Cell>
                                 <Button floated='right' icon='minus' negative size='small' onClick={()=>setDeleteModalKey(formF.key)}/>
-                                <Button floated='right' icon='copy outline' color='grey' size='small' onClick={()=>addFormF(newFormFObj())}/>
+                                <Button floated='right' icon='copy outline' color='grey' size='small' onClick={()=>addFormF(formF.value)}/>
                                 <Button floated='right' icon='pencil' color='blue' size='small' onClick={()=>setSelectedFormF(formF)}/>
                             </Table.Cell>
                         </Table.Row>
