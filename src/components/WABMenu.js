@@ -4,8 +4,8 @@ export default function WABMenu({setSelectedMenu, selectedMenu}){
     const menuItems=[
         {id:'formfs', title: 'Form Fs'},
         {id:'aircraft', title:'Aircraft'},
-        {id:'standardkit', title:'Kit'},
-        {id:'standardcargo', title:'Cargo'},
+        {id:'standardkit', title:'Kit Presets'},
+        {id:'standardcargo', title:'Cargo Presets'},
         {id:'workpad', title:'Workpad'}
     ]
 

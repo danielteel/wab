@@ -6,7 +6,7 @@ const noBorderInput={style:{border:'0px'}};
 
 
 
-export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef}){
+export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, index=null}){
     const [name, setName] = useState('');
     const [weight, setWeight] = useState('');
     const [arm, setArm] = useState('');
@@ -16,37 +16,51 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef}){
     const realArm=formatArm(arm);
     const realMoment=formatMoment(moment);
 
-    const saveName = () => mergeItem(item.key, {name: name});
+    const keyOrIndex = () => (index!==null && index!==undefined)?index:item.key
+
+    let weightValue, momentValue, nameValue;
+    if (index!==null && index!==undefined){
+        weightValue=item.weight;
+        momentValue=item.moment;
+        nameValue=item.name;
+    }else{
+        weightValue=item.value.weight;
+        momentValue=item.value.moment;
+        nameValue=item.value.name;
+    }
+
+    const saveName = () => mergeItem(keyOrIndex(), {name: name});
+
 
     const saveWeight = () => {
         if (String(arm).trim()!==""){
             const newMoment = formatMoment(realWeight*realArm/momentSimplifier);
-            mergeItem(item.key, {weight: realWeight, moment: newMoment});
+            mergeItem(keyOrIndex(), {weight: realWeight, moment: newMoment});
         }else{
-            mergeItem(item.key, {weight: realWeight});
+            mergeItem(keyOrIndex(), {weight: realWeight});
         }
         if (String(realWeight)!==String(weight).trim()) setWeight(realWeight);
     }
 
     const saveMoment = () => {
-        mergeItem(item.key, {moment: realMoment});
+        mergeItem(keyOrIndex(), {moment: realMoment});
         if (String(realMoment)!==String(moment).trim()) setMoment(realMoment);
     }
     const saveArm = () => {
-        const newMoment = formatMoment(item.value.weight * realArm / momentSimplifier);
-        mergeItem(item.key, {moment: newMoment});
+        const newMoment = formatMoment(weightValue * realArm / momentSimplifier);
+        mergeItem(keyOrIndex(), {moment: newMoment});
         if (String(realArm)!==String(arm).trim()) setArm(realArm);
     }
 
     useEffect(()=>{
-        setWeight(realNumber(item.value.weight));
-        setMoment(formatMoment(item.value.moment));
-        setArm(formatArm(item.value.moment/item.value.weight*momentSimplifier));
-    }, [item.value.weight, item.value.moment])
+        setWeight(realNumber(weightValue));
+        setMoment(formatMoment(momentValue));
+        setArm(formatArm(momentValue/weightValue*momentSimplifier));
+    }, [weightValue, momentValue])
 
     useEffect(()=>{
-        setName(item.value.name);
-    }, [item.value.name]);
+        setName(nameValue);
+    }, [nameValue]);
 
     return (
         <Table.Row>
@@ -109,7 +123,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef}){
             </Table.Cell>
             <Table.Cell>
                 <Button.Group size='mini'>
-                    <Button icon='minus' negative onClick={()=>deleteItem(item.key)}/>
+                    <Button icon='minus' negative onClick={()=>deleteItem(keyOrIndex())}/>
                 </Button.Group>
             </Table.Cell>
         </Table.Row>

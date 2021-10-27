@@ -66,7 +66,9 @@ export default function ImportFromStandard({whatToShow, onAdd, onClose, alreadyH
                             if (presetItems[key].alreadyHave){
                                checkbox=<Checkbox disabled checked="true"/>
                             }else{
-                                toggleFunction=()=>{
+                                toggleFunction=(e)=>{
+                                    e.preventDefault();
+                                    e.stopPropagation();
                                     const newPreset={...presetItems};
                                     newPreset[key].checked=!(newPreset[key].checked);
                                     setPresetItems(newPreset);

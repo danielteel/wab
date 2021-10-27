@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
-import { Header, Button, List } from "semantic-ui-react";
+import { useState } from "react";
+import { Header, Button, Segment } from "semantic-ui-react";
+import KitOrCargo from './KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 
 export default function Workdpad(){
@@ -7,6 +8,18 @@ export default function Workdpad(){
     
     const [kit, setKit] = useState([]);
     const [cargo, setCargo] = useState([]);
+
+    const addItem = (array, setFunction, obj) => setFunction([...array, obj]);
+    const deleteItem = (array, setFunction, index) => {
+        const copy=[...array];
+        copy.splice(index, 1);
+        setFunction(copy);
+    }
+    const mergeItem = (array, setFunction, index, props) =>{
+        const copy=[...array];
+        copy[index]=Object.assign({...copy[index]}, props);
+        setFunction(copy);
+    }
 
 
     return <>
@@ -20,19 +33,16 @@ export default function Workdpad(){
                 setCargo([...cargo, ...newItems]);
             }
         }}/>
-        <Header>
-            Kit
-        </Header>
-        <List>
-            {kit.map(item=>{
-                console.log(item);
-                return <List.Item>{item.name+" "+item.weight+" "+item.moment}</List.Item>
-            })}
-        </List>
-        <Button onClick={()=>setImportOpen('kit')} >Import from kit presets</Button>
-        <Header>
-            Cargo
-        </Header>
-        <Button onClick={()=>setImportOpen('cargo')} >Import from cargo presets</Button>
+        <Segment secondary>
+        <KitOrCargo useIndexes title='Kit' items={kit} addItem={(o)=>addItem(kit, setKit, o)} deleteItem={(i)=>deleteItem(kit, setKit, i)} mergeItem={(i, v)=>mergeItem(kit, setKit, i, v)}>
+            <Button primary onClick={()=>setImportOpen('kit')} >Import presets</Button>
+        </KitOrCargo>
+        </Segment>
+        
+        <Segment secondary>
+        <KitOrCargo useIndexes title='Cargo' items={cargo} addItem={(o)=>addItem(cargo, setCargo, o)} deleteItem={(i)=>deleteItem(cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(cargo, setCargo, i, v)}>
+            <Button primary onClick={()=>setImportOpen('cargo')} >Import presets</Button>
+        </KitOrCargo>
+        </Segment>
     </>
 }
