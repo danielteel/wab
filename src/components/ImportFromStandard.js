@@ -48,7 +48,7 @@ export default function ImportFromStandard({whatToShow, onAdd, onClose, alreadyH
         <Modal open={!!whatToShow} size="tiny">
             <Modal.Header>Import from {whatToShow} presets</Modal.Header>
         <Modal.Content>
-            <Table selectable compact>
+            <Table selectable compact unstackable>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell></Table.HeaderCell>

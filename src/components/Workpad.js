@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Header, Button, Segment, List, Dropdown } from "semantic-ui-react";
+import { Header, Button, Segment, List, Dropdown, Table } from "semantic-ui-react";
 import KitOrCargo from './KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 import { useLocalStorageArray } from "../useLocalStorage";
+import { useEffect } from "react/cjs/react.development";
 
 export default function Workdpad({formF, mergeFormF, close}){
     const [importOpen, setImportOpen]=useState(null);
     
-    const [aircraft, addAircraft, deleteAircraft, setAircraft] = useLocalStorageArray('wab','aircraft');
-    
+    const [aircraftList, , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
+
+    const selectedAircraft=getAircraftFromKey(formF.aircraft);
+
     const kit=formF.kit;
     const cargo=formF.cargo;
 
@@ -40,7 +43,27 @@ export default function Workdpad({formF, mergeFormF, close}){
         }}/>
         <Segment secondary>
             <Header>Aircraft</Header>
-            <Dropdown selection options={aircraft.map( ac=>({key: ac.key, value: ac.key, text: ac.value.tail}))}/>
+            <Dropdown selection fluid options={aircraftList.map( ac=>({key: ac.key, value: ac.key, text: ac.value.tail}))} value={formF.aircraft} onChange={(e,{value})=>mergeFormF({aircraft: value})}/>
+            {
+            selectedAircraft
+            ?
+                <Table>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Weight</Table.HeaderCell>
+                            <Table.HeaderCell>Mom</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        <Table.Row>
+                            <Table.Cell>{selectedAircraft.weight}</Table.Cell>
+                            <Table.Cell>{selectedAircraft.moment}</Table.Cell>
+                        </Table.Row>
+                    </Table.Body>
+                </Table>
+            :
+                null
+            }
         </Segment>
 
         <Segment secondary>

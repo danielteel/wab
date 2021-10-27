@@ -295,7 +295,16 @@ function useLocalStorageArray(nameSpace, arrayName){
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nameSpace, arrayName, keyValuePairs]);
 
-    return [keyValuePairs, addItem, deleteItem, setItem, mergeItem];
+    const getKeyValue = (key) =>{
+        for (const o of keyValuePairs){
+            if (o.key===key){
+                return o.value;
+            }
+        }
+        return null;
+    }
+
+    return [keyValuePairs, addItem, deleteItem, setItem, mergeItem, getKeyValue];
 }
 
 

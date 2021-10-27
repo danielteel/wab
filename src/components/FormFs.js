@@ -8,11 +8,7 @@ function newFormFObj(){
     return {
         created: (new Date()).toDateString(),
         name:"untitled",
-        aircraft:{
-            tail:"",
-            weight:35495,
-            moment:14101
-        },
+        aircraft:null,
         crew:{
             weight: 660,
             moment:151.5
@@ -32,6 +28,8 @@ function newFormFObj(){
 
 export default function FormFs(){
     const [formFs, addFormF, deleteFormF, , mergeFormF] = useLocalStorageArray('wab','formfs');
+    const [aircraft, , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
+
     const [deleteModalKey, setDeleteModalKey]=useState(null);
     const [selectedFormF, setSelectedFormF]=useState(null);
 
@@ -74,7 +72,7 @@ export default function FormFs(){
                                 {formF.value.name}
                             </Table.Cell>
                             <Table.Cell>
-                                {formF.value.aircraft.tail}
+                                {getAircraftFromKey(formF.value.aircraft)?.tail}
                             </Table.Cell>
                             <Table.Cell>
                                 {formF.value.created}
