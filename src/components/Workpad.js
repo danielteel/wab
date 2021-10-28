@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Header, Button, Segment, List, Dropdown, Table } from "semantic-ui-react";
+import { Header, Button, Segment, List, Dropdown, Container, Divider } from "semantic-ui-react";
 import KitOrCargo from './KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 import { useLocalStorageArray } from "../useLocalStorage";
-import { useEffect } from "react/cjs/react.development";
+import { calcArm, formatWeight, formatMoment } from "../common";
 
 export default function Workdpad({formF, mergeFormF, close}){
     const [importOpen, setImportOpen]=useState(null);
@@ -30,6 +30,30 @@ export default function Workdpad({formF, mergeFormF, close}){
         setFunction(copy);
     }
 
+    const aircraftDropdownList = aircraftList.map( ac=>{
+        const valueView=(<div style={{display:'flex'}}>
+            
+            <List horizontal relaxed verticalAlign='middle'>
+                <List.Item>
+                    <List.Header>{ac.value.tail}</List.Header>
+                </List.Item>
+                <List.Item>
+                    <List.Header>Weight</List.Header>
+                    <List.Content>{formatWeight(ac.value.weight)}</List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Header>Arm</List.Header>
+                    <List.Content>{calcArm(ac.value.weight, ac.value.moment)}</List.Content>
+                </List.Item>
+                <List.Item>
+                    <List.Header>Moment</List.Header>
+                    <List.Content>{formatMoment(ac.value.moment)}</List.Content>
+                </List.Item>
+            </List>
+            </div>
+        );
+        return {key: ac.key, value: ac.key, text: valueView, children: ac.value.tail};
+    })
 
     return <>
         
@@ -44,36 +68,39 @@ export default function Workdpad({formF, mergeFormF, close}){
         <Segment secondary>
             <Header textAlign='center'>Aircraft</Header>
             {
-                <Table compact unstackable>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell colSpan='2'>
+                // <Table compact unstackable>
+                //     <Table.Header>
+                //         <Table.Row>
+                //             <Table.HeaderCell colSpan='2'>
+            }
                                 <Dropdown   selection
                                             fluid
-                                            options={aircraftList.map( ac=>({key: ac.key, value: ac.key, text: ac.value.tail}))}
+                                            verticalAlign='center'
+                                            options={aircraftDropdownList}
                                             value={formF.aircraft}
                                             onChange={(e,{value})=>mergeFormF({aircraft: value})}
                                 />
-                            </Table.HeaderCell>
-                        </Table.Row>
-                        <Table.Row>
-                            <Table.HeaderCell>Weight</Table.HeaderCell>
-                            <Table.HeaderCell>Mom</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    {
-                    selectedAircraft
-                    ?
-                        <Table.Body>
-                            <Table.Row>
-                                <Table.Cell>{selectedAircraft.weight}</Table.Cell>
-                                <Table.Cell>{selectedAircraft.moment}</Table.Cell>
-                            </Table.Row>
-                        </Table.Body>
-                    :
-                        null
-                    }
-                </Table>
+            {//                 </Table.HeaderCell>
+            //             </Table.Row>
+            //             <Table.Row>
+            //                 <Table.HeaderCell>Weight</Table.HeaderCell>
+            //                 <Table.HeaderCell>Mom</Table.HeaderCell>
+            //             </Table.Row>
+            //         </Table.Header>
+            //         {
+            //         selectedAircraft
+            //         ?
+            //             <Table.Body>
+            //                 <Table.Row>
+            //                     <Table.Cell>{selectedAircraft.weight}</Table.Cell>
+            //                     <Table.Cell>{selectedAircraft.moment}</Table.Cell>
+            //                 </Table.Row>
+            //             </Table.Body>
+            //         :
+            //             null
+            //         }
+            //     </Table>
+            // }
             }
         </Segment>
 
