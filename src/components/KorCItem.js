@@ -122,9 +122,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                 </form>
             </Table.Cell>
             <Table.Cell>
-                <Button.Group size='mini'>
-                    <Button icon='minus' negative onClick={()=>deleteItem(keyOrIndex())}/>
-                </Button.Group>
+                <Button tabIndex='-1' icon='minus' size='mini' negative onClick={()=>deleteItem(keyOrIndex())}/>
             </Table.Cell>
         </Table.Row>
     );

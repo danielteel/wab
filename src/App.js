@@ -34,7 +34,7 @@ function App(){
 
     return (
         <Container>
-            <Segment attached="top"><Header textAlign="center">WAB</Header></Segment>
+            <Segment attached="top"><Header as='h1' textAlign="center">WAB</Header></Segment>
             <WABMenu selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
             <Segment attached="bottom">{screenToRender}</Segment>
             <Header as='h6' textAlign='center'>

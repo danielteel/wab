@@ -24,8 +24,8 @@ function formatMoment(moment){
     return Math.round(moment*1000)/1000;
 }
 
-function isAboutEquals(a,b){
-    if (Math.abs(a-b)<0.0000001){
+function isAboutEquals(a,b, smallestDiff=0.0000001){
+    if (Math.abs(a-b)<smallestDiff){
         return true;
     }
     return false;

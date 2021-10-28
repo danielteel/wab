@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import { Button, Header, Table } from "semantic-ui-react";
 import KOrCItem from "./KorCItem";
+import {calcArm, formatMoment, formatWeight} from '../common';
 
-export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem, useIndexes, children}){
+export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem, useIndexes, children, showTotals}){
     const setFocusToNew = useRef(false);
     const lastItemRef = useRef();
 
@@ -17,12 +18,24 @@ export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem
         return <KOrCItem firstBoxRef={ref} key={title+'-items-'+index} item={item} mergeItem={mergeItem} deleteItem={deleteItem} index={useIndexes?index:null}/>
     });
 
+    let weightTotal=0, momentTotal=0, armTotal;
+    if (showTotals){
+        items.forEach( item => {
+            weightTotal+=formatWeight(useIndexes?item.weight:item.value.moment);
+            momentTotal+=formatMoment(useIndexes?item.moment:item.value.moment);
+        })
+        weightTotal=formatWeight(weightTotal);
+        momentTotal=formatMoment(momentTotal);
+        armTotal=calcArm(weightTotal, momentTotal);
+    }
+
     if (setFocusToNew.current){
         setTimeout( () => {
             lastItemRef.current.focus();
             setFocusToNew.current=false;
         },0);
     }
+
 
     return (<>
         <Header textAlign='center'>{title}</Header>
@@ -46,6 +59,19 @@ export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem
                 {itemsToDisplay}
             </Table.Body>
             <Table.Footer>
+                {
+                    showTotals
+                    ?
+                        <Table.Row>
+                            <Table.Cell>Total</Table.Cell>
+                            <Table.Cell>{weightTotal}</Table.Cell>
+                            <Table.Cell>{armTotal}</Table.Cell>
+                            <Table.Cell>{momentTotal}</Table.Cell>
+                            <Table.Cell></Table.Cell>
+                        </Table.Row>
+                    :
+                        null
+                }
                 <Table.Row>
                     <Table.Cell colSpan={5}>
                         {addItemButton}

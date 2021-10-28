@@ -78,9 +78,9 @@ export default function FormFs(){
                                 {formF.value.created}
                             </Table.Cell>
                             <Table.Cell>
-                                <Button floated='right' icon='minus' negative size='small' onClick={()=>setDeleteModalKey(formF.key)}/>
-                                <Button floated='right' icon='copy outline' color='grey' size='small' onClick={()=>addFormF(formF.value)}/>
-                                <Button floated='right' icon='pencil' color='blue' size='small' onClick={()=>setSelectedFormF(formF)}/>
+                                <Button floated='right' icon='minus' negative size='mini' onClick={()=>setDeleteModalKey(formF.key)}/>
+                                <Button floated='right' icon='copy outline' color='grey' size='mini' onClick={()=>addFormF(formF.value)}/>
+                                <Button floated='right' icon='pencil' color='blue' size='mini' onClick={()=>setSelectedFormF(formF)}/>
                             </Table.Cell>
                         </Table.Row>
                 );

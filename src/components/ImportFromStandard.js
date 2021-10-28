@@ -5,8 +5,8 @@ import {isAboutEquals, calcArm} from '../common';
 
 function itemsMatch(a, b){
     return (a.name.trim().toLowerCase()===b.name.trim().toLowerCase() &&
-        isAboutEquals(a.weight, b.weight) &&
-        isAboutEquals(a.moment, b.moment));
+        isAboutEquals(a.weight, b.weight, 0.1) &&
+        isAboutEquals(a.moment, b.moment, 0.1));
 }
 
 function doesItAlreadyExist(item, alreadyHave){

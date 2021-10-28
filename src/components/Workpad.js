@@ -42,38 +42,49 @@ export default function Workdpad({formF, mergeFormF, close}){
             }
         }}/>
         <Segment secondary>
-            <Header>Aircraft</Header>
-            <Dropdown selection fluid options={aircraftList.map( ac=>({key: ac.key, value: ac.key, text: ac.value.tail}))} value={formF.aircraft} onChange={(e,{value})=>mergeFormF({aircraft: value})}/>
+            <Header textAlign='center'>Aircraft</Header>
             {
-            selectedAircraft
-            ?
-                <Table>
+                <Table compact unstackable>
                     <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell colSpan='2'>
+                                <Dropdown   selection
+                                            fluid
+                                            options={aircraftList.map( ac=>({key: ac.key, value: ac.key, text: ac.value.tail}))}
+                                            value={formF.aircraft}
+                                            onChange={(e,{value})=>mergeFormF({aircraft: value})}
+                                />
+                            </Table.HeaderCell>
+                        </Table.Row>
                         <Table.Row>
                             <Table.HeaderCell>Weight</Table.HeaderCell>
                             <Table.HeaderCell>Mom</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
-                    <Table.Body>
-                        <Table.Row>
-                            <Table.Cell>{selectedAircraft.weight}</Table.Cell>
-                            <Table.Cell>{selectedAircraft.moment}</Table.Cell>
-                        </Table.Row>
-                    </Table.Body>
+                    {
+                    selectedAircraft
+                    ?
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>{selectedAircraft.weight}</Table.Cell>
+                                <Table.Cell>{selectedAircraft.moment}</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                    :
+                        null
+                    }
                 </Table>
-            :
-                null
             }
         </Segment>
 
         <Segment secondary>
-        <KitOrCargo useIndexes title='Kit' items={kit} addItem={(o)=>addItem(kit, setKit, o)} deleteItem={(i)=>deleteItem(kit, setKit, i)} mergeItem={(i, v)=>mergeItem(kit, setKit, i, v)}>
+        <KitOrCargo useIndexes showTotals title='Kit' items={kit} addItem={(o)=>addItem(kit, setKit, o)} deleteItem={(i)=>deleteItem(kit, setKit, i)} mergeItem={(i, v)=>mergeItem(kit, setKit, i, v)}>
             <Button secondary onClick={()=>setImportOpen('kit')} >Import presets</Button>
         </KitOrCargo>
         </Segment>
         
         <Segment secondary>
-        <KitOrCargo useIndexes title='Cargo' items={cargo} addItem={(o)=>addItem(cargo, setCargo, o)} deleteItem={(i)=>deleteItem(cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(cargo, setCargo, i, v)}>
+        <KitOrCargo useIndexes showTotals title='Cargo' items={cargo} addItem={(o)=>addItem(cargo, setCargo, o)} deleteItem={(i)=>deleteItem(cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(cargo, setCargo, i, v)}>
             <Button secondary onClick={()=>setImportOpen('cargo')} >Import presets</Button>
         </KitOrCargo>
         </Segment>

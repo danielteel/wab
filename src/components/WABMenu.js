@@ -9,7 +9,7 @@ export default function WABMenu({setSelectedMenu, selectedMenu}){
     ]
 
     return (
-        <Menu attached>
+        <Menu attached stackable>
             {
                 menuItems.map( item => <Menu.Item
                     key={"menu"+item.id}
