@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Header, Button, Segment, List, Dropdown } from "semantic-ui-react";
+import { Header, Button, Segment, List, Dropdown, Input } from "semantic-ui-react";
 import KitOrCargo from './KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 import { useLocalStorageArray } from "../useLocalStorage";
@@ -10,8 +10,6 @@ export default function Workdpad({formF, mergeFormF, close}){
     
     const [aircraftList, , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
 
-    const kit=formF.kit;
-    const cargo=formF.cargo;
 
     const setKit = data => mergeFormF({kit: data});
     const setCargo = data => mergeFormF({cargo: data});
@@ -56,11 +54,11 @@ export default function Workdpad({formF, mergeFormF, close}){
     return <>
         
         <Button icon="caret left" primary content="Back" onClick={()=>close()}/>
-        <ImportFromStandard whatToShow={importOpen} alreadyHave={importOpen==='kit'?kit:cargo} onClose={()=>setImportOpen(null)} onAdd={(newItems)=>{
+        <ImportFromStandard whatToShow={importOpen} alreadyHave={importOpen==='kit'?formF.kit:formF.cargo} onClose={()=>setImportOpen(null)} onAdd={(newItems)=>{
             if (importOpen==='kit'){
-                setKit([...kit, ...newItems]);
+                setKit([...formF.kit, ...newItems]);
             }else if (importOpen==='cargo'){
-                setCargo([...cargo, ...newItems]);
+                setCargo([...formF.cargo, ...newItems]);
             }
         }}/>
         <Segment secondary>
@@ -75,12 +73,24 @@ export default function Workdpad({formF, mergeFormF, close}){
         </Segment>
 
         <Segment secondary>
-            <KitOrCargo useIndexes showTotals title='Kit' items={kit} addItem={(o)=>addItem(kit, setKit, o)} deleteItem={(i)=>deleteItem(kit, setKit, i)} mergeItem={(i, v)=>mergeItem(kit, setKit, i, v)}/>
+            <Header textAlign='center'>Crew</Header>
+            <Input label='Crew Weight' value={formF.crew?.weight} onChange={(e)=>mergeFormF({crew: {weight: e.target.value, moment: formF.crew.moment}})}/>
+            <Input label='Moment' value={formF.crew?.moment} onChange={(e)=>mergeFormF({crew: {weight: formF.crew.weight, moment: e.target.value}})}/>
+        </Segment>
+
+        <Segment secondary>
+            <KitOrCargo useIndexes showTotals title='Kit' items={formF.kit} addItem={(o)=>addItem(formF.kit, setKit, o)} deleteItem={(i)=>deleteItem(formF.kit, setKit, i)} mergeItem={(i, v)=>mergeItem(formF.kit, setKit, i, v)}/>
             <Button secondary onClick={()=>setImportOpen('kit')} >Import kit presets</Button>
         </Segment>
         
         <Segment secondary>
-            <KitOrCargo useIndexes showTotals title='Cargo' items={cargo} addItem={(o)=>addItem(cargo, setCargo, o)} deleteItem={(i)=>deleteItem(cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(cargo, setCargo, i, v)}/>
+            <Header textAlign='center'>Fuel</Header>
+            <Input label='Fuel' value={formF.fuel?.weight} onChange={(e)=>mergeFormF({fuel: {weight: e.target.value, moment: formF.fuel?.moment}})}/>
+            <Input label='Moemnt' value={formF.fuel?.moment} onChange={(e)=>mergeFormF({fuel: {weight: formF.fuel.moment, moment: formF.fuel?.moment}})}/>
+        </Segment>
+
+        <Segment secondary>
+            <KitOrCargo useIndexes showTotals title='Cargo' items={formF.cargo} addItem={(o)=>addItem(formF.cargo, setCargo, o)} deleteItem={(i)=>deleteItem(formF.cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(formF.cargo, setCargo, i, v)}/>
             <Button secondary onClick={()=>setImportOpen('cargo')} >Import cargo presets</Button>
         </Segment>
     </>
