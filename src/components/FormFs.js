@@ -7,19 +7,17 @@ import Workdpad from "./Workpad";
 function newFormFObj(){
     return {
         created: (new Date()).toDateString(),
-        name:"untitled",
-        aircraft:null,
+        name: "untitled",
+        aircraft: null,
         crew:{
             weight: 660,
-            moment:151.5
+            moment: 151.5
         },
         kit:[],
-        fuel:[
-            {
-                weight:7500,
-                moment:2000
-            }
-        ],
+        fuel:{
+            weight: 7500,
+            moment: 2000
+        },
         cargo:[]
     };
 }

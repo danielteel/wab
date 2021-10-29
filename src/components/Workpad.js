@@ -85,8 +85,8 @@ export default function Workdpad({formF, mergeFormF, close}){
         
         <Segment secondary>
             <Header textAlign='center'>Fuel</Header>
-            <Input label='Fuel' value={formF.fuel?.weight} onChange={(e)=>mergeFormF({fuel: {weight: e.target.value, moment: formF.fuel?.moment}})}/>
-            <Input label='Moemnt' value={formF.fuel?.moment} onChange={(e)=>mergeFormF({fuel: {weight: formF.fuel.moment, moment: formF.fuel?.moment}})}/>
+            <Input label='Fuel Weight' value={formF.fuel?.weight} onChange={(e)=>mergeFormF({fuel: {weight: e.target.value, moment: formF.fuel?.moment}})}/>
+            <Input label='Moment' value={formF.fuel?.moment} onChange={(e)=>mergeFormF({fuel: {weight: formF.fuel.weight, moment: e.target.value}})}/>
         </Segment>
 
         <Segment secondary>
