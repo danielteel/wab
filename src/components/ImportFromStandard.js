@@ -77,11 +77,11 @@ export default function ImportFromStandard({whatToShow, onAdd, onClose, alreadyH
                             }
 
                             return  <Table.Row disabled={presetItems[key].alreadyHave} onClick={toggleFunction}>
-                                    <Table.Cell>{checkbox}</Table.Cell>
-                                    <Table.Cell>{presetItems[key].value.name}</Table.Cell>
-                                    <Table.Cell>{presetItems[key].value.weight}</Table.Cell>
-                                    <Table.Cell>{calcArm(presetItems[key].value.weight, presetItems[key].value.moment)}</Table.Cell>
-                                    <Table.Cell>{presetItems[key].value.moment}</Table.Cell>
+                                        <Table.Cell>{checkbox}</Table.Cell>
+                                        <Table.Cell>{presetItems[key].value.name}</Table.Cell>
+                                        <Table.Cell>{presetItems[key].value.weight}</Table.Cell>
+                                        <Table.Cell>{calcArm(presetItems[key].value.weight, presetItems[key].value.moment)}</Table.Cell>
+                                        <Table.Cell>{presetItems[key].value.moment}</Table.Cell>
                                     </Table.Row>
                     })
                     }
@@ -89,15 +89,15 @@ export default function ImportFromStandard({whatToShow, onAdd, onClose, alreadyH
             </Table>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='black' content={"Cancel"} onClick={onClose}/>
-          <Button positive content={"Add"} onClick={()=>{
-              const itemsToAdd = [];
-              Object.keys(presetItems).forEach( key => {
-                  if (presetItems[key].checked) itemsToAdd.push({name: presetItems[key].value.name, weight: presetItems[key].value.weight, moment: presetItems[key].value.moment});
-              });
-              onAdd(itemsToAdd);
-              onClose();
-              }}/>
+            <Button color='black' content={"Cancel"} onClick={onClose}/>
+            <Button positive content={"Add"} onClick={()=>{
+                const itemsToAdd = [];
+                Object.keys(presetItems).forEach( key => {
+                    if (presetItems[key].checked) itemsToAdd.push({name: presetItems[key].value.name, weight: presetItems[key].value.weight, moment: presetItems[key].value.moment});
+                });
+                onAdd(itemsToAdd);
+                onClose();
+            }}/>
         </Modal.Actions>
       </Modal>
     )

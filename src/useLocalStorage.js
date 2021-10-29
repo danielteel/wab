@@ -80,21 +80,23 @@ function cancelSaveToStorageWithHystersis(key){
     }
 }
 
+function flushSaveToStorageQueue(){
+    //Flush all data waiting to be saved
+    for (let savePair of saveToStorageWithHystersis_List){
+        clearTimeout(savePair.timeoutId);
+        try {
+            localStorage.setItem(savePair.key, JSON.stringify(savePair.value));
+        } catch {
+            console.error("saveToStorageWithHystersis_beforeUnload: cant save to localStorage key:", savePair.key," value:",savePair.value)
+        }
+    }
+    saveToStorageWithHystersis_List=[];
+}
+
 function saveToStorageWithHystersis(key, value, hystersisTime=500){
     if (saveToStorageWithHystersis_FirstTime){
         saveToStorageWithHystersis_FirstTime=false;
-        window.addEventListener('beforeunload', (e) => {
-            //Flush all data waiting to be saved
-            for (let savePair of saveToStorageWithHystersis_List){
-                clearTimeout(savePair.timeoutId);
-                try {
-                    localStorage.setItem(savePair.key, JSON.stringify(savePair.value));
-                } catch {
-                    console.error("saveToStorageWithHystersis_beforeUnload: cant save to localStorage key:", savePair.key," value:",savePair.value)
-                }
-            }
-            saveToStorageWithHystersis_List=[];
-        });
+        window.addEventListener('beforeunload', flushSaveToStorageQueue);
     }
 
     cancelSaveToStorageWithHystersis(key);
@@ -304,7 +306,29 @@ function useLocalStorageArray(nameSpace, arrayName){
         return null;
     }
 
-    return [keyValuePairs, addItem, deleteItem, setItem, mergeItem, getKeyValue];
+    const sortItems = (sortFn) => {
+        setKeyValuePairs( oldKeyValuePairs => {
+            flushSaveToStorageQueue();//flush queue so we dont accidentally overwrite our sorting
+            const newKeyValuePairs = [...oldKeyValuePairs];
+            newKeyValuePairs.sort( (a,b)=>{
+                const [,,,aId]=deconstructArrayKey(a.key);
+                const [,,,bId]=deconstructArrayKey(b.key);
+                return aId-bId;
+            })
+            const keyList = newKeyValuePairs.map( item => item.key );
+            newKeyValuePairs.sort( (a,b) => sortFn(a.value, b.value) );
+            keyList.forEach( (kv, index) => { newKeyValuePairs[index].key=kv } );
+    
+            newKeyValuePairs.forEach( item => {
+                saveToStorageWithHystersis(item.key, item.value);
+                broadcastStorageEvent(subscriberId, 'set', item.key, item.value);
+            });
+
+            return newKeyValuePairs;
+        })
+    }
+
+    return [keyValuePairs, addItem, deleteItem, setItem, mergeItem, getKeyValue, sortItems];
 }
 
 

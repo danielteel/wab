@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
-import { Input, Table, Button } from "semantic-ui-react";
+import { useEffect, useRef, useState } from "react";
+import { Input, Table, Button, Modal, Image } from "semantic-ui-react";
 import { formatArm, formatWeight, formatMoment, realNumber, momentSimplifier } from "../common";
+
+import cabin from '../cabin.png';
+
 const noPadCell={padding:'0px'};
 const noBorderInput={style:{border:'0px'}};
 
@@ -11,6 +14,8 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
     const [weight, setWeight] = useState('');
     const [arm, setArm] = useState('');
     const [moment, setMoment] = useState('');
+    const [showCabin, setShowCabin] = useState(null);
+    const cabinImageRef = useRef();
 
     const realWeight=formatWeight(weight);
     const realArm=formatArm(arm);
@@ -64,6 +69,23 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
 
     return (
         <Table.Row>
+            {!showCabin?null:
+                <Modal basic size='small' open onClose={()=>setShowCabin(null)}>
+                    <Modal.Content scrolling>
+                        <div class="ui image fluid">
+                        <img alt='' ref={cabinImageRef} src={cabin} onClick={(e)=>{     
+                                        setShowCabin({...showCabin, arm: e.nativeEvent.offsetY/cabinImageRef.current.height*650});
+                        }}/>
+                        </div>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        
+                        New Arm:{showCabin.arm}
+                        <Button onClick={()=>setShowCabin(null)}>Cancel</Button>
+                        <Button onClick={()=>{showCabin.save(showCabin.arm);setShowCabin(null)}}>Save</Button>
+                    </Modal.Actions>
+                </Modal>
+            }
             <Table.Cell style={noPadCell}>
                 <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
                     <Input
@@ -104,6 +126,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                     onBlur={saveArm}
                     onKeyPress={e => {if (e.key === 'Enter') saveArm()}}
                     input={noBorderInput}
+                    action={<Button icon='plane' onClick={()=>setShowCabin({arm: arm, save:(v)=>setArm(v)})}/>}
                     />
                 </form>
             </Table.Cell>

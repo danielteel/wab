@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Header, Button, Segment, List, Dropdown, Container, Divider } from "semantic-ui-react";
+import { Header, Button, Segment, List, Dropdown } from "semantic-ui-react";
 import KitOrCargo from './KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 import { useLocalStorageArray } from "../useLocalStorage";
@@ -9,8 +9,6 @@ export default function Workdpad({formF, mergeFormF, close}){
     const [importOpen, setImportOpen]=useState(null);
     
     const [aircraftList, , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
-
-    const selectedAircraft=getAircraftFromKey(formF.aircraft);
 
     const kit=formF.kit;
     const cargo=formF.cargo;
@@ -67,53 +65,23 @@ export default function Workdpad({formF, mergeFormF, close}){
         }}/>
         <Segment secondary>
             <Header textAlign='center'>Aircraft</Header>
-            {
-                // <Table compact unstackable>
-                //     <Table.Header>
-                //         <Table.Row>
-                //             <Table.HeaderCell colSpan='2'>
-            }
-                                <Dropdown   selection
-                                            fluid
-                                            verticalAlign='center'
-                                            options={aircraftDropdownList}
-                                            value={formF.aircraft}
-                                            onChange={(e,{value})=>mergeFormF({aircraft: value})}
-                                />
-            {//                 </Table.HeaderCell>
-            //             </Table.Row>
-            //             <Table.Row>
-            //                 <Table.HeaderCell>Weight</Table.HeaderCell>
-            //                 <Table.HeaderCell>Mom</Table.HeaderCell>
-            //             </Table.Row>
-            //         </Table.Header>
-            //         {
-            //         selectedAircraft
-            //         ?
-            //             <Table.Body>
-            //                 <Table.Row>
-            //                     <Table.Cell>{selectedAircraft.weight}</Table.Cell>
-            //                     <Table.Cell>{selectedAircraft.moment}</Table.Cell>
-            //                 </Table.Row>
-            //             </Table.Body>
-            //         :
-            //             null
-            //         }
-            //     </Table>
-            // }
-            }
+                <Dropdown   selection
+                            fluid
+                            verticalAlign='center'
+                            options={aircraftDropdownList}
+                            value={formF.aircraft}
+                            onChange={(e,{value})=>mergeFormF({aircraft: value})}
+                />
         </Segment>
 
         <Segment secondary>
-        <KitOrCargo useIndexes showTotals title='Kit' items={kit} addItem={(o)=>addItem(kit, setKit, o)} deleteItem={(i)=>deleteItem(kit, setKit, i)} mergeItem={(i, v)=>mergeItem(kit, setKit, i, v)}>
-            <Button secondary onClick={()=>setImportOpen('kit')} >Import presets</Button>
-        </KitOrCargo>
+            <KitOrCargo useIndexes showTotals title='Kit' items={kit} addItem={(o)=>addItem(kit, setKit, o)} deleteItem={(i)=>deleteItem(kit, setKit, i)} mergeItem={(i, v)=>mergeItem(kit, setKit, i, v)}/>
+            <Button secondary onClick={()=>setImportOpen('kit')} >Import kit presets</Button>
         </Segment>
         
         <Segment secondary>
-        <KitOrCargo useIndexes showTotals title='Cargo' items={cargo} addItem={(o)=>addItem(cargo, setCargo, o)} deleteItem={(i)=>deleteItem(cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(cargo, setCargo, i, v)}>
-            <Button secondary onClick={()=>setImportOpen('cargo')} >Import presets</Button>
-        </KitOrCargo>
+            <KitOrCargo useIndexes showTotals title='Cargo' items={cargo} addItem={(o)=>addItem(cargo, setCargo, o)} deleteItem={(i)=>deleteItem(cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(cargo, setCargo, i, v)}/>
+            <Button secondary onClick={()=>setImportOpen('cargo')} >Import cargo presets</Button>
         </Segment>
     </>
 }
