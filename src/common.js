@@ -17,11 +17,11 @@ function formatArm(arm){
 
 function formatWeight(weight){
     weight=realNumber(weight);
-    return Math.round(weight*10)/10;
+    return Math.round(weight*100)/100;
 }
 
 function formatMoment(moment){
-    return Math.round(moment*1000)/1000;
+    return Math.round(realNumber(moment)*10000)/10000;
 }
 
 function isAboutEquals(a,b, smallestDiff=0.0000001){

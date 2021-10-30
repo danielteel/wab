@@ -41,7 +41,8 @@ export default function ImportFromStandard({whatToShow, onAdd, onClose, alreadyH
         }else{
             setPresetItems( {} );
         }
-    //Fuck off lint, if I added it, it would be an endless loop
+    //If I added it, it would be an endless loop, if weird bugs happen look here
+    //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [presetItemsStorage, whatToShow, alreadyHave])
 
     return (

@@ -15,8 +15,8 @@ function newFormFObj(){
         },
         kit:[],
         fuel:{
-            weight: 7500,
-            moment: 2000
+            weight: 0,
+            moment: 0
         },
         cargo:[]
     };
@@ -26,7 +26,7 @@ function newFormFObj(){
 
 export default function FormFs(){
     const [formFs, addFormF, deleteFormF, , mergeFormF] = useLocalStorageArray('wab','formfs');
-    const [aircraft, , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
+    const [ , , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
 
     const [deleteModalKey, setDeleteModalKey]=useState(null);
     const [selectedFormF, setSelectedFormF]=useState(null);

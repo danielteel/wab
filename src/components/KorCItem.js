@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Input, Table, Button, Modal, Image } from "semantic-ui-react";
+import { Input, Table, Button, Modal } from "semantic-ui-react";
 import { formatArm, formatWeight, formatMoment, realNumber, momentSimplifier } from "../common";
 
 import cabin from '../cabin.png';
@@ -79,7 +79,6 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                         </div>
                     </Modal.Content>
                     <Modal.Actions>
-                        
                         New Arm:{showCabin.arm}
                         <Button onClick={()=>setShowCabin(null)}>Cancel</Button>
                         <Button onClick={()=>{showCabin.save(showCabin.arm);setShowCabin(null)}}>Save</Button>
@@ -96,7 +95,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                     value={name}
                     onChange={(e)=>setName(e.target.value)}
                     onBlur={saveName}
-                    onKeyPress={e => {if (e.key === 'Enter') saveName()}}
+                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveName()}}}
                     input={noBorderInput}
                     />
                 </form>
@@ -110,7 +109,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                     value={weight}
                     onChange={(e)=>setWeight(e.target.value)}
                     onBlur={saveWeight}
-                    onKeyPress={e => {if (e.key === 'Enter') saveWeight()}}
+                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveWeight()}}}
                     input={noBorderInput}
                     />
                 </form>
@@ -124,9 +123,9 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                     value={arm}
                     onChange={(e)=>setArm(e.target.value)}
                     onBlur={saveArm}
-                    onKeyPress={e => {if (e.key === 'Enter') saveArm()}}
+                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveArm()}}}
                     input={noBorderInput}
-                    action={<Button icon='plane' onClick={()=>setShowCabin({arm: arm, save:(v)=>setArm(v)})}/>}
+                    action={<Button icon='plane' tabIndex='-1' onClick={()=>setShowCabin({arm: arm, save:(v)=>setArm(v)})}/>}
                     />
                 </form>
             </Table.Cell>
@@ -139,7 +138,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                     value={moment}
                     onChange={(e)=>setMoment(e.target.value)}
                     onBlur={saveMoment}
-                    onKeyPress={e => {if (e.key === 'Enter') saveMoment()}}
+                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveMoment()}}}
                     input={noBorderInput}
                     />
                 </form>
