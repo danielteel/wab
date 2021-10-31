@@ -2,7 +2,7 @@ import { useState } from "react/cjs/react.development";
 import { Button, Table, Header} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
 import ConfirmationModal from "./ConfirmationModal";
-import Workdpad from "./Workpad";
+import FormF from "./FormF";
 
 function newFormFObj(){
     return {
@@ -11,7 +11,7 @@ function newFormFObj(){
         aircraft: null,
         crew:{
             weight: 660,
-            moment: 151.5
+            moment: 157.5
         },
         kit:[],
         fuel:{
@@ -32,7 +32,7 @@ export default function FormFs(){
     const [selectedFormF, setSelectedFormF]=useState(null);
 
     if (!!selectedFormF){
-        return <Workdpad formF={selectedFormF.value} mergeFormF={(value)=>mergeFormF(selectedFormF.key, value)} close={()=>setSelectedFormF(null)}/>
+        return <FormF formF={selectedFormF.value} mergeFormF={(value)=>mergeFormF(selectedFormF.key, value)} close={()=>setSelectedFormF(null)}/>
     }
     return (
         <>
@@ -65,22 +65,22 @@ export default function FormFs(){
           <Table.Body>
             {formFs.map( formF => {
                 return (
-                        <Table.Row>
-                            <Table.Cell>
-                                {formF.value.name}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {getAircraftFromKey(formF.value.aircraft)?.tail}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {formF.value.created}
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Button floated='right' icon='minus' negative size='mini' onClick={()=>setDeleteModalKey(formF.key)}/>
-                                <Button floated='right' icon='copy outline' color='grey' size='mini' onClick={()=>addFormF(formF.value)}/>
-                                <Button floated='right' icon='pencil' color='blue' size='mini' onClick={()=>setSelectedFormF(formF)}/>
-                            </Table.Cell>
-                        </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>
+                            {formF.value.name}
+                        </Table.Cell>
+                        <Table.Cell>
+                            {getAircraftFromKey(formF.value.aircraft)?.tail}
+                        </Table.Cell>
+                        <Table.Cell>
+                            {formF.value.created}
+                        </Table.Cell>
+                        <Table.Cell>
+                            <Button floated='right' icon='minus' negative size='mini' onClick={()=>setDeleteModalKey(formF.key)}/>
+                            <Button floated='right' icon='copy outline' color='grey' size='mini' onClick={()=>addFormF(formF.value)}/>
+                            <Button floated='right' icon='pencil' color='blue' size='mini' onClick={()=>setSelectedFormF(formF)}/>
+                        </Table.Cell>
+                    </Table.Row>
                 );
             })}
           </Table.Body>

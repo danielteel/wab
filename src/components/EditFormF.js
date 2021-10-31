@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { Header, Button, Segment, List, Dropdown, Input, Divider } from "semantic-ui-react";
+import { Header, Button, Segment, List, Dropdown, Input, Divider, Label } from "semantic-ui-react";
 import KitOrCargo from './KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 import { useLocalStorageArray } from "../useLocalStorage";
 import { calcArm, formatWeight, formatMoment } from "../common";
 import {getFuelMoment, maxFuel} from '../getFuelMoment';
 
-export default function Workdpad({formF, mergeFormF, close}){
+export default function EditFormF({formF, mergeFormF, close}){
     const [importOpen, setImportOpen]=useState(null);
     
-    const [aircraftList] = useLocalStorageArray('wab','aircraft');
+    const [aircraftList, , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
 
 
     const setKit = data => mergeFormF({kit: data});
@@ -53,7 +53,11 @@ export default function Workdpad({formF, mergeFormF, close}){
     })
 
     return <>
-        <Button icon="caret left" primary content="Back" onClick={()=>close()}/>
+        <Segment secondary>
+            <Header textAlign='center'>Name</Header>
+            <Input fluid label='Name' value={formF.name} onChange={(e)=>mergeFormF({name: e.target.value})}/>
+        </Segment>
+
         <Divider/>
         <ImportFromStandard whatToShow={importOpen} alreadyHave={importOpen==='kit'?formF.kit:formF.cargo} onClose={()=>setImportOpen(null)} onAdd={(newItems)=>{
             if (importOpen==='kit'){
@@ -65,6 +69,7 @@ export default function Workdpad({formF, mergeFormF, close}){
 
         <Segment secondary>
             <Header textAlign='center'>Aircraft</Header>
+                {getAircraftFromKey(formF.aircraft)?null:<Label color='red' basic pointing='below'>Select an aircraft</Label>}
                 <Dropdown   selection
                             fluid
                             verticalAlign='center'
@@ -98,6 +103,13 @@ export default function Workdpad({formF, mergeFormF, close}){
         <Divider section/>
 
         <Segment secondary>
+            <KitOrCargo useIndexes showTotals title='Cargo' items={formF.cargo} addItem={(o)=>addItem(formF.cargo, setCargo, o)} deleteItem={(i)=>deleteItem(formF.cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(formF.cargo, setCargo, i, v)}/>
+            <Button secondary onClick={()=>setImportOpen('cargo')} >Import cargo presets</Button>
+        </Segment>
+
+        <Divider section/>
+
+        <Segment secondary>
             <Header textAlign='center'>Fuel</Header>
             <Input error={formF.fuel.weight>maxFuel || formF.fuel.weight<0} label='Fuel Weight' value={formF.fuel?.weight} onChange={(e)=>mergeFormF({fuel: {weight: e.target.value, moment: getFuelMoment(e.target.value)}})}
                 onBlur={()=>mergeFormF({fuel: {weight: formatWeight(formF.fuel.weight), moment: getFuelMoment(formatWeight(formF.fuel.weight))}})}
@@ -106,11 +118,7 @@ export default function Workdpad({formF, mergeFormF, close}){
             <Input label='Moment' readOnly value={formF.fuel?.moment}/>
         </Segment>
 
-        <Divider section/>
 
-        <Segment secondary>
-            <KitOrCargo useIndexes showTotals title='Cargo' items={formF.cargo} addItem={(o)=>addItem(formF.cargo, setCargo, o)} deleteItem={(i)=>deleteItem(formF.cargo, setCargo, i)} mergeItem={(i, v)=>mergeItem(formF.cargo, setCargo, i, v)}/>
-            <Button secondary onClick={()=>setImportOpen('cargo')} >Import cargo presets</Button>
-        </Segment>
+
     </>
 }

@@ -5,7 +5,6 @@ import WABMenu from './components/WABMenu';
 import FormFs from './components/FormFs';
 import Aircraft from './components/Aircraft';
 import KitCargoPreset from './components/KitCargoPreset';
-import Workpad from './components/Workpad';
 import { momentSimplifier } from './common';
 
 function App(){
@@ -24,9 +23,6 @@ function App(){
             break;
         case 'standardcargo':
             screenToRender=<KitCargoPreset/>
-            break;
-        case 'workpad':
-            screenToRender=<Workpad/>
             break;
         default:
             break;
