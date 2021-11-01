@@ -2,46 +2,85 @@
 .view-parent {
     font-style:normal;
     font-family: Arial, Helvetica, sans-serif;
-    font-size:small;
+    font-size:smaller;
 }
 
 .view-parent  * {
-    align-self: center;
     white-space: nowrap;
     overflow: hidden;
 }
 
-.wab-header {
+.wab.header-grid {
     display: grid;
     grid-template-columns: 15fr 3.5fr 1.5fr;
 }
 
-.wab-header-title {
-    grid-row: auto / span 3;
-}
-
-.wab-bold {
-    font-weight: bold;
-}
-
-.wab-center {
-    justify-self: center;
-}
-.wab-right {
-    justify-self: end;
-}
-
-.wab-mission {
+.wab.mission-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.wab-split {
+.wab.split-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
-.wab-basic{
+.wab.basic-grid{
     display: grid;
     grid-template-columns: 6fr 43fr 19fr 19fr;
+}
+
+.wab.title-cell {
+    display: flex;
+    grid-row: auto / span 3;
+}
+
+.wab.bold {
+    font-weight: bold;
+}
+
+.wab.m {
+    display: flex;
+    align-items: center;
+}
+.wab.c {
+    display: flex;
+    justify-content: center;
+}
+.wab.r {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.wab.bl{
+    border-left: 1px solid black;
+}
+
+.wab.bt{
+    border-top: 1px solid black;
+}
+
+.wab.bb{
+    border-bottom: 1px solid black;
+}
+
+.wab.br{
+    border-right: 1px solid black;
+}
+
+.wab.tbl{
+    border-left: 2px solid black;
+}
+
+.wab.tbt{
+    border-top: 2px solid black;
+}
+
+.wab.tbb{
+    border-bottom: 2px solid black;
+}
+
+.wab.tbr{
+    border-right: 2px solid black;
 }
