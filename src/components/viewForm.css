@@ -1,98 +1,47 @@
 
-.view-right{
-    justify-content: end;
-}
-.view-center{
-    justify-content: center;
-}
-
-.right-aligned {
-    margin-left: auto;
-    margin-right: 3px;
+.view-parent {
+    font-style:normal;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:small;
 }
 
-.grid-cell {
-    border: solid black 1px;
-    display: flex;
+.view-parent  * {
+    align-self: center;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
-.grid-cell-thick {
-    border: solid black 2px;
-}
-
-.grid-cell-thick-right{
-    border-right: solid black 2px;
-}
-
-.view-grid-base {
+.wab-header {
     display: grid;
-    border: solid 2px black;
-}
-
-.view-grid-base-thick {
-    display: grid;
-    border: solid 2px black;
-}
-
-.view-grid-base-none {
-    display: grid;
-    border: 0px;
-}
-
-.view-grid-a {
-    grid-template-areas: "title lemac lemacvalue"
-                         "title mac macvalue"
-                         "title simplifier simplifiervalue";
     grid-template-columns: 15fr 3.5fr 1.5fr;
 }
 
-.view-grid-a-title {
-    grid-area: title;
-    display: flex;
-    align-items: center;
-}
-.view-grid-a-lemac {
-    grid-area: lemac;
-    display: flex;
-    align-items: center;
-}
-.view-grid-a-mac {
-    grid-area: mac;
-    display: flex;
-    align-items: center;
-}
-.view-grid-a-simplifier {
-    grid-area: simplifier;
-    display: flex;
-    align-items: center;
+.wab-header-title {
+    grid-row: auto / span 3;
 }
 
-.view-grid-a-lemac-value{
-    grid-area: lemacvalue;
-    display: flex;
-    align-items: center;
-}
-.view-grid-a-mac-value{
-    grid-area: macvalue;
-    display: flex;
-    align-items: center;
-}
-.view-grid-a-simplifier-value{
-    grid-area: simplifiervalue;
-    display: flex;
-    align-items: center;
+.wab-bold {
+    font-weight: bold;
 }
 
-.view-grid-b {
+.wab-center {
+    justify-self: center;
+}
+.wab-right {
+    justify-self: end;
+}
+
+.wab-mission {
+    display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    border-top-width: 0px;
 }
 
-.view-grid-split {
+.wab-split {
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    border-top-width: 0px;
 }
 
-.view-grid-basic{
+.wab-basic{
+    display: grid;
     grid-template-columns: 6fr 43fr 19fr 19fr;
 }
