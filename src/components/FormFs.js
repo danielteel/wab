@@ -1,4 +1,4 @@
-import { useState } from "react/cjs/react.development";
+import { useState } from "react";
 import { Button, Table, Header} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
 import ConfirmationModal from "./ConfirmationModal";

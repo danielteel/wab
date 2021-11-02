@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect } from 'react';
 
 function saveAppState(localStorageKey, stateObj){
-    console.log("Saving", stateObj);
     try {
         localStorage.setItem(localStorageKey, JSON.stringify(stateObj));
     } catch {
