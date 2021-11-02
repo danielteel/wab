@@ -12,7 +12,7 @@ function calcArm(weight, moment){
 
 function formatArm(arm){
     arm=realNumber(arm);
-    return Math.round(arm*10)/10;
+    return Math.round(arm*100)/100;
 }
 
 function formatWeight(weight){
@@ -31,4 +31,24 @@ function isAboutEquals(a,b, smallestDiff=0.0000001){
     return false;
 }
 
-export {calcArm, realNumber, formatArm, formatWeight, formatMoment, isAboutEquals, momentSimplifier};
+function displayVal(number, decimal=0){
+    number=Number(number);
+    if (!isFinite(number)) number=0;
+
+    let formatted;
+    if (decimal>=0){
+        formatted=number.toFixed(decimal);
+    }else{
+        formatted=number;
+        for (let i=0;i>decimal;i--){
+            formatted/=10;
+        }
+        formatted=Math.round(formatted);
+        for (let i=0;i>decimal;i--){
+            formatted*=10;
+        }
+    }
+    return formatted;
+}
+
+export {calcArm, realNumber, formatArm, formatWeight, formatMoment, isAboutEquals, displayVal, momentSimplifier};

@@ -2,7 +2,7 @@
 .view-parent {
     font-style:normal;
     font-family: Arial, Helvetica, sans-serif;
-    font-size:smaller;
+    font-size:10pt;
 }
 
 .view-parent  * {
@@ -52,6 +52,10 @@
     justify-content: flex-end;
 }
 
+.wab.push-right {
+    margin-left: auto;
+}
+
 
 .wab.bl{
     border-left: 1px solid black;
@@ -83,4 +87,13 @@
 
 .wab.tbr{
     border-right: 2px solid black;
+}
+
+.wab.pad{
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.wab.span4{
+    grid-column: span 3;
 }

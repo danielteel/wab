@@ -1,47 +1,90 @@
 import { Header} from 'semantic-ui-react';
 import { useLocalStorageArray } from '../useLocalStorage';
-import {realNumber} from '../common';
+import {realNumber, displayVal, calcArm} from '../common';
+import { getFuelMoment, taxiTakeOffFuelWeight, landingFuelWeight, landingFuelMoment } from '../getFuelMoment';
 import './viewForm.css';
 
 const total = (...args) => args.reduce( (prev, current) => (prev+realNumber(current)), 0);
+const difference = (...args) => args.reduce( (prev, current) => (realNumber(prev)-realNumber(current)));
 
+const Weight = ({value, className, ...props}) => <div className={'wab m r pad '+className} {...props}>{displayVal(value, 1)}</div>
+const Moment = ({value, className, ...props}) => <div className={'wab m r pad '+className} {...props}>{displayVal(value, 2)}</div>
+const Arm = ({value, className, ...props}) => <div className={'wab m r pad '+className} {...props}>{displayVal(value, 2)}</div>
 
 export default function ViewFormF({formF}){
     const [ , , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
 
     let aircraft = getAircraftFromKey(formF.aircraft) || {weight: 0, moment: 0, name: ''};
 
-    let kitWeight = formF.kit.reduce( (prev, current)=>prev+realNumber(current.weight), 0);
-    let kitMoment = formF.kit.reduce( (prev, current)=>prev+realNumber(current.moment), 0);
-    let operatingWeight = total(aircraft.weight, formF.crew.weight, kitWeight);
-    let operatingMoment = total(aircraft.moment, formF.crew.moment, kitMoment);
-    let cargoWeight = formF.cargo.reduce( (prev, current) => total(prev, current.weight), 0);
-    let cargoMoment = formF.cargo.reduce( (prev, current) => total(prev, current.moment), 0);
-    let totalAircraftWeight = total(operatingWeight, formF.fuel.weight);
-    let totalAircraftMoment = total(operatingMoment, formF.fuel.moment);
+    const kitWeight = formF.kit.reduce( (prev, current)=>prev+realNumber(current.weight), 0);
+    const kitMoment = formF.kit.reduce( (prev, current)=>prev+realNumber(current.moment), 0);
+    const operatingWeight = total(aircraft.weight, formF.crew.weight, kitWeight);
+    const operatingMoment = total(aircraft.moment, formF.crew.moment, kitMoment);
+    const cargoWeight = formF.cargo.reduce( (prev, current) => total(prev, current.weight), 0);
+    const cargoMoment = formF.cargo.reduce( (prev, current) => total(prev, current.moment), 0);
+    const totalAircraftWeight = total(operatingWeight, formF.fuel.weight);
+    const totalAircraftMoment = total(operatingMoment, formF.fuel.moment);
+
+    const rampWeight = total(operatingWeight, formF.fuel.weight, cargoWeight);
+    const rampMoment = total(operatingMoment, formF.fuel.moment, cargoMoment);
+    const rampCG = calcArm(rampWeight, rampMoment);
+
+    const takeoffFuelWeight = difference(formF.fuel.weight, taxiTakeOffFuelWeight);
+    const takeoffFuelMoment = getFuelMoment(takeoffFuelWeight);
+    const taxiTakeoffFuelMoment = difference(formF.fuel.moment, takeoffFuelMoment);
+    
+    const takeoffWeight = total(operatingWeight, takeoffFuelWeight, cargoWeight);
+    const takeoffMoment = total(operatingMoment, takeoffFuelMoment, cargoMoment);
+    const takeoffCG = calcArm(takeoffWeight, takeoffMoment);
+
+    const zeroFuelWeight = total(operatingWeight, cargoWeight);
+    const zeroFuelMoment = total(operatingMoment, cargoMoment);
+    const zeroFuelCG = calcArm(zeroFuelWeight, zeroFuelMoment);
+
+    const landingWeight = total(zeroFuelWeight, landingFuelWeight);
+    const landingMoment = total(zeroFuelMoment, landingFuelMoment);
+    const landingCG = calcArm(landingWeight, landingMoment);
 
     const content = (
         <div className='view-parent'>
-            <Header as='h2' textAlign='center'>HeyWABS Form F</Header>
+            <Header as='h3' textAlign='center'>FOR UNOFFICIAL USE ONLY</Header>
             <div className="wab header-grid tbt tbl tbr">
-                <div className='wab title-cell c m'>WEIGHT AND BALANCE CLEARANCE FORM F - TRANSPORT</div>
-                <div className='wab m   tbl'>LEMAC</div>
-                <div className='wab m r bl'>0.00</div>
-                <div className='wab m   bt tbl'>MAC</div>
-                <div className='wab m r bt bl'>0.00</div>
-                <div className='wab m   bt tbl'>Moment Simplifier</div>
-                <div className='wab m r bt bl'>1000</div>
+                <div className='wab title-cell c m bold'>WEIGHT AND BALANCE CLEARANCE FORM F - TRANSPORT</div>
+                <div className='wab m   tbl bold pad'>LEMAC</div>
+                <div className='wab m r bl pad'>0.00</div>
+                <div className='wab m   bt tbl bold pad'>MAC</div>
+                <div className='wab m r bt bl pad'>0.00</div>
+                <div className='wab m   bt tbl bold pad'>Moment Simplifier</div>
+                <div className='wab m r bt bl pad'>1000</div>
             </div>
 
             <div className="wab mission-grid tbt tbr tbl">
-                <div className='wab m br'>DATE (YYYY/MM/DD)</div>
-                <div className='wab m br'>AIRCRAFT<span className='right-aligned'>CV-22</span></div>
-                <div className='wab m br'>FROM</div>
-                <div className='wab m'>HOME STATION</div>
-                <div className='wab m br bt'>MISSION</div>
-                <div className='wab m br bt'>SERIAL NO.<span className='right-aligned'>{aircraft.tail}</span></div>
-                <div className='wab m br bt'>TO</div>
-                <div className='wab m bt'>PILOT</div>
+                <div className='wab m br pad'>
+                    <span className='wab bold'>DATE (YYYY/MM/DD)</span>
+                </div>
+                <div className='wab m br pad'>
+                    <span className='wab bold'>AIRCRAFT</span>
+                    <span className='wab push-right'>CV-22</span>
+                </div>
+                <div className='wab m br pad'>
+                    <span className='wab bold'>FROM</span>
+                </div>
+                <div className='wab m pad'>
+                    <span className='wab bold'>HOME STATION</span>
+                </div>
+                <div className='wab m br bt pad'>
+                    <span className='wab bold'>MISSION</span>
+                </div>
+                <div className='wab m br bt pad'>
+                    <span className='wab bold'>SERIAL NO.</span>
+                    <span className='wab push-right'>{aircraft.tail}</span>
+                </div>
+                <div className='wab m br bt pad'>
+                    <span className='wab bold'>TO</span>
+                </div>
+                <div className='wab m bt pad'>
+                    <span className='wab bold'>PILOT</span>
+                </div>
             </div>
             <div className="wab split-grid tbl tbr tbt">
                 <div className='wab br'>
@@ -55,20 +98,20 @@ export default function ViewFormF({formF}){
 
                     {/*Aircraft*/}
                     <div className='wab m c bt br bold'>1</div>
-                    <div className='wab m   bt br'>BASIC AIRCRAFT</div>
-                    <div className='wab m r bt br'>{aircraft.weight}</div>
-                    <div className='wab m r bt'>{aircraft.moment}</div>
+                    <div className='wab m   bt br pad'>BASIC AIRCRAFT</div>
+                    <Weight className='bt br' value={aircraft.weight}/>
+                    <Moment className='bt' value={aircraft.moment}/>
                     
                     {/*Crew*/}
                     <div className='wab m c bt br bold'>3</div>
-                    <div className='wab m   bt br'>Crew</div>
-                    <div className='wab m r bt br'>{formF.crew.weight}</div>
-                    <div className='wab m r bt'>{formF.crew.moment}</div>
+                    <div className='wab m   bt br pad'>Crew</div>
+                    <Weight className='bt br' value={formF.crew.weight}/>
+                    <Moment className='bt' value={formF.crew.moment}/>
 
                     <div className='wab m c bt br bold'>4</div>
-                    <div className='wab m   bt br'>Crew Bags</div>
-                    <div className='wab m r bt br'>0.0</div>
-                    <div className='wab m r bt'>0.00</div>
+                    <div className='wab m   bt br pad'>Crew Bags</div>
+                    <Weight className='bt br' value={0}/>
+                    <Moment className='bt' value={0}/>
 
                     <div className='wab m c bt br bold'>5</div><div className='wab bt br'/><div className='wab bt br'/><div className='wab bt'/>
                     <div className='wab m c bt br bold'>6</div><div className='wab bt br'/><div className='wab bt br'/><div className='wab bt'/>
@@ -80,9 +123,9 @@ export default function ViewFormF({formF}){
                         formF.kit.map( (item, index) => {
                             return (<>
                                 <div className={'wab m c br bold '+(index===0?'bt':'')}>{index===0?8:null}</div>
-                                <div className= 'wab m   bt br'>{item.name}</div>
-                                <div className= 'wab m r bt br'>{item.weight}</div>
-                                <div className= 'wab m r bt'>{item.moment}</div>
+                                <div className= 'wab m   bt br pad'>{item.name}</div>
+                                <Weight className='bt br' value={item.weight}/>
+                                <Moment className='bt' value={item.moment}/>
                             </>)
                         })
                     :
@@ -92,36 +135,26 @@ export default function ViewFormF({formF}){
                     }
 
                     <div className='wab m c tbt br bold'>9</div>
-                    <div className='wab m   tbt br bold'>Operating Weight</div>
-                    <div className='wab m r tbt br bold'>{operatingWeight}</div>
-                    <div className='wab m r tbt bold'>{operatingMoment}</div>
+                    <div className='wab m   tbt br bold pad'>Operating Weight</div>
+                    <Weight className='bt tbt br bold' value={operatingWeight}/>
+                    <Moment className='bt tbt bold' value={operatingMoment}/>
 
 
                     <div className='wab m c tbt br'></div>
-                    <div className='wab m   tbt br'>Internal Fuel</div>
-                    <div className='wab m r tbt br'>{formF.fuel.weight}</div>
-                    <div className='wab m r tbt'>{formF.fuel.moment}</div>
-
-                    {/* <div className='wab m c br'></div>
-                    <div className='wab m   bt br'>Fwd Mat Fuel</div>
-                    <div className='wab m r bt br'>{formF.fuel.weight}</div>
-                    <div className='wab m r bt'>{formF.fuel.moment}</div>
-
-                    <div className='wab m c br'></div>
-                    <div className='wab m   bt br'>Aft Mat Fuel</div>
-                    <div className='wab m r bt br'>{formF.fuel.weight}</div>
-                    <div className='wab m r bt'>{formF.fuel.moment}</div> */}
+                    <div className='wab m   tbt br pad'>Internal Fuel</div>
+                    <Weight className='bt tbt br' value={formF.fuel.weight}/>
+                    <Moment className='bt tbt' value={formF.fuel.moment}/>
 
                     <div className='wab m c br bold'>10</div>
-                    <div className='wab m   bt br bold'>Total Fuel</div>
-                    <div className='wab m r bt br bold'>{formF.fuel.weight}</div>
-                    <div className='wab m r bt bold'>{formF.fuel.moment}</div>
+                    <div className='wab m   bt br bold pad'>Total Fuel</div>
+                    <Weight className='bt bt br bold' value={formF.fuel.weight}/>
+                    <Moment className='bt bt bold' value={formF.fuel.moment}/>
 
 
-                    <div className='wab m c tbt br'>12</div>
-                    <div className='wab m   tbt br'>Total Aircraft Weight (without cargo)</div>
-                    <div className='wab m r tbt br'>{totalAircraftWeight}</div>
-                    <div className='wab m r tbt'>{totalAircraftMoment}</div>
+                    <div className='wab m c tbt br bold'>12</div>
+                    <div className='wab m   tbt br pad'>Total Aircraft Weight (without cargo)</div>
+                    <Weight className='bt tbt br' value={totalAircraftWeight}/>
+                    <Moment className='bt tbt' value={totalAircraftMoment}/>
 
 
                     {/*Cargo*/
@@ -131,9 +164,9 @@ export default function ViewFormF({formF}){
                             const tbt=index===0?'tbt':null;
                             return (<>
                                 <div className={'wab m c br bold '+tbt}>{index===0?13:null}</div>
-                                <div className={'wab m   bt br '+tbt}>{item.name}</div>
-                                <div className={'wab m r bt br '+tbt}>{item.weight}</div>
-                                <div className={'wab m r bt    '+tbt}>{item.moment}</div>
+                                <div className={'wab m   bt br pad '+tbt}>{item.name}</div>
+                                <Weight className={'bt br '+tbt} value={item.weight}/>
+                                <Moment className={'bt '+tbt} value={item.moment}/>
                             </>)
                         })
                     :
@@ -142,16 +175,66 @@ export default function ViewFormF({formF}){
                         </>
                     }
                     {
-                        (new Array(35-formF.cargo.length-formF.kit.length)).fill(null).map( a => {
-                            return <><div className='wab m c br'>&nbsp;</div><div className='wab bt br'/> <div className='wab bt br'/> <div className='wab bt'/></>
-                        })
+                        formF.cargo.length-formF.kit.length < 35
+                        ?
+                            (new Array(35-formF.cargo.length-formF.kit.length)).fill(null).map( a => {
+                                return <><div className='wab m c br'>&nbsp;</div><div className='wab bt br'/> <div className='wab bt br'/> <div className='wab bt'/></>
+                            })
+                        :
+                            null
                     }
                     <div className='wab m c br'/>
-                    <div className='wab m   bt br bold'>Total Payload</div>
-                    <div className='wab m r bt br bold'>{cargoWeight}</div>
-                    <div className='wab m r bt bold'>{cargoMoment}</div>
+                    <div className='wab m   bt br bold pad'>Total Payload</div>
+                    <Weight className='bt br bold' value={cargoWeight}/>
+                    <Moment className='bt bold' value={cargoMoment}/>
+
+                    <div className='wab m c br tbt bold'>16</div>
+                    <div className='wab m   tbt br bold pad'>Ramp Weight</div>
+                    <Weight className='tbt br bold' value={rampWeight}/>
+                    <Moment className='tbt bold' value={rampMoment}/>
+
+                    <div className='wab m c br bt bold'>17</div>
+                    <div className='wab m   bt bold pad span4'>Ramp CG (in)<Arm className='push-right' value={rampCG}/></div>
+
+                    
+                    <div className='wab m c br bt bold'>18</div>
+                    <div className='wab m   bt br pad'>Taxi/Takeoff Fuel</div>
+                    <Weight className='bt br' value={0-taxiTakeOffFuelWeight}/>
+                    <Moment className='bt' value={0-taxiTakeoffFuelMoment}/>
+
+                    <div className='wab m c br bt bold'>19</div>
+                    <div className='wab m   bt br bold pad'>Takeoff Weight</div>
+                    <Weight className='bt br bold' value={takeoffWeight}/>
+                    <Moment className='bt bold' value={takeoffMoment}/>
+
+                    <div className='wab m c br bt bold'>20</div>
+                    <div className='wab m   bt bold pad span4'>Takeoff CG GD (in)<Arm className='push-right' value={takeoffCG}/></div>
+
+                    <div className='wab m c br bt bold'>21</div>
+                    <div className='wab m   bt br bold pad'>Zero Fuel Weight</div>
+                    <Weight className='bt br bold' value={zeroFuelWeight}/>
+                    <Moment className='bt bold' value={zeroFuelMoment}/>
+
+                    <div className='wab m c br bt bold'>22</div>
+                    <div className='wab m   bt bold pad span4'>Zero Fuel CG GD (in)<Arm className='push-right' value={zeroFuelCG}/></div>
+
+                    
+                    <div className='wab m c br bt bold'>23</div>
+                    <div className='wab m   bt br pad'>Est. Landing Fuel</div>
+                    <Weight className='bt br' value={landingFuelWeight}/>
+                    <Moment className='bt' value={landingFuelMoment}/>
+
+                    <div className='wab m c br bt bold'>24</div>
+                    <div className='wab m   bt br bold pad'>Est. Landing Weight</div>
+                    <Weight className='bt br bold' value={landingWeight}/>
+                    <Moment className='bt bold' value={landingMoment}/>
+
+                    <div className='wab m c br bt tbb bold'>25</div>
+                    <div className='wab m   bt tbb bold pad span4'>Est. Landing CG GD (in)<Arm className='push-right' value={landingCG}/></div>
                 </div>
             </div>
+            
+            <Header as='h3' textAlign='center'>FOR UNOFFICIAL USE ONLY</Header>
         </div>
     );
 

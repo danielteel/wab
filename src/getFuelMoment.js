@@ -140,7 +140,6 @@ let jp8=[
     {weight: 13572, moment: 5520.7}
 ];
 
-const maxFuel = 13572;
 
 function getFuelMoment(fuelWeight){
     fuelWeight=Number(fuelWeight);
@@ -155,4 +154,9 @@ function getFuelMoment(fuelWeight){
     return "Cant determine";
 }
 
-export {getFuelMoment, maxFuel};
+const maxFuel = 13572;
+const taxiTakeOffFuelWeight=500;
+const landingFuelWeight=1500;
+const landingFuelMoment=getFuelMoment(landingFuelWeight);
+
+export {getFuelMoment, maxFuel, taxiTakeOffFuelWeight, landingFuelWeight, landingFuelMoment};
