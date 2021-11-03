@@ -85,8 +85,6 @@ export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem
 
     return (<>
         <Header textAlign='center'>{title}</Header>
-
-        
         <Table unstackable compact celled selectable sortable>
             <Table.Header>
                 <Table.Row>
@@ -96,11 +94,17 @@ export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem
                     <Table.HeaderCell sorted={ifSortMatch('weight')} width={3} onClick={()=>toggleSortBy('weight', true)}>Weight</Table.HeaderCell>  
                     <Table.HeaderCell sorted={ifSortMatch('arm')} width={3} onClick={()=>toggleSortBy('arm', true)}>Arm</Table.HeaderCell>  
                     <Table.HeaderCell sorted={ifSortMatch('moment')} width={3} onClick={()=>toggleSortBy('moment', true)}>Mom</Table.HeaderCell>
-                    <Table.Cell></Table.Cell>
+                    <Table.HeaderCell onClick={()=>setSortBy({key: null})}></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {itemsToDisplay}
+                {
+                    itemsToDisplay.length
+                    ?
+                        itemsToDisplay
+                    :
+                        <Table.Row textAlign='center'><Table.Cell colSpan={5} disabled>no items in list</Table.Cell></Table.Row>
+                }
             </Table.Body>
             <Table.Footer>
                 {

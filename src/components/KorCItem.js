@@ -70,9 +70,9 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
     return (
         <Table.Row>
             {!showCabin?null:
-                <Modal basic size='small' open onClose={()=>setShowCabin(null)}>
+                <Modal basic size='fullscreen' open onClose={()=>setShowCabin(null)}>
                     <Modal.Content scrolling>
-                        <div class="ui image fluid">
+                        <div className="ui image fluid">
                         <img alt='' ref={cabinImageRef} src={cabin} onClick={(e)=>{     
                                         setShowCabin({...showCabin, arm: e.nativeEvent.offsetY/cabinImageRef.current.height*650});
                         }}/>
@@ -104,7 +104,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                 <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
                     <Input
                     fluid
-                    type='text'
+                    type='number'
                     placeholder='Weight'
                     value={weight}
                     onChange={(e)=>setWeight(e.target.value)}
@@ -118,7 +118,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                 <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
                     <Input
                     fluid
-                    type='text'
+                    type='number'
                     placeholder='Arm'
                     value={arm}
                     onChange={(e)=>setArm(e.target.value)}
@@ -133,7 +133,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                 <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
                     <Input
                     fluid
-                    type='text'
+                    type='number'
                     placeholder='Moment'
                     value={moment}
                     onChange={(e)=>setMoment(e.target.value)}

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Segment, Divider } from "semantic-ui-react";
-import KitOrCargo from './KitOrCargo';
+import { Button, Segment } from "semantic-ui-react";
+import KitOrCargo from '../KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 
 export default function EditFormFKitOrCargo({formF, mergeFormF, kit, cargo}){
@@ -33,19 +33,16 @@ export default function EditFormFKitOrCargo({formF, mergeFormF, kit, cargo}){
             onAdd={(newItems)=>setItems([...formF[listName], ...newItems])}
         />
 
-        <Divider section/>
+        <KitOrCargo 
+            useIndexes
+            showTotals
+            title={kit?'Kit':'Cargo'}
+            items={formF[listName]}
+            addItem={(o)=>addItem(formF[listName], o)}
+            deleteItem={(i)=>deleteItem(formF[listName], i)}
+            mergeItem={(i, v)=>mergeItem(formF[listName], i, v)}
+        />
+        <Button secondary onClick={()=>setImportOpen(true)} >Import {listName} presets</Button>
 
-        <Segment secondary>
-            <KitOrCargo 
-                useIndexes
-                showTotals
-                title={kit?'Kit':'Cargo'}
-                items={formF[listName]}
-                addItem={(o)=>addItem(formF[listName], o)}
-                deleteItem={(i)=>deleteItem(formF[listName], i)}
-                mergeItem={(i, v)=>mergeItem(formF[listName], i, v)}
-            />
-            <Button secondary onClick={()=>setImportOpen(true)} >Import {listName} presets</Button>
-        </Segment>
     </>
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Table, Header} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
 import ConfirmationModal from "./ConfirmationModal";
-import FormF from "./FormF";
+import FormF from "./formf-components/FormF";
 
 function newFormFObj(){
     return {
@@ -66,7 +66,7 @@ export default function FormFs(){
           <Table.Body>
             {formFs.map( formF => {
                 return (
-                    <Table.Row>
+                    <Table.Row key={formF.key}>
                         <Table.Cell>
                             {formF.value.mission}
                         </Table.Cell>

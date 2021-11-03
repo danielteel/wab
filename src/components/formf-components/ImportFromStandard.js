@@ -1,7 +1,7 @@
-import { useLocalStorageArray } from "../useLocalStorage";
-import {Modal, Button, Checkbox, Table} from 'semantic-ui-react';
+import { useLocalStorageArray } from "../../useLocalStorage";
+import {Modal, Button, Checkbox, Table, Tab} from 'semantic-ui-react';
 import { useState, useEffect } from "react";
-import {isAboutEquals, calcArm} from '../common';
+import {isAboutEquals, calcArm} from '../../common';
 
 function itemsMatch(a, b){
     return (a.name.trim().toLowerCase()===b.name.trim().toLowerCase() &&
@@ -17,12 +17,12 @@ function doesItAlreadyExist(item, alreadyHave){
 }
 
 export default function ImportFromStandard({open, whatToShow, onAdd, onClose, alreadyHave}){
-    const [presetItemsStorage]=useLocalStorageArray('wab',whatToShow);
+    const [presetItemsStorage]=useLocalStorageArray('wab', whatToShow);
     
     const [presetItems, setPresetItems] = useState({});
 
     useEffect(()=>{
-        if (whatToShow){
+        if (whatToShow && open){
             const items = {};
             for (const o of presetItemsStorage){
                 if (!doesItAlreadyExist(o.value, alreadyHave)){
@@ -43,7 +43,7 @@ export default function ImportFromStandard({open, whatToShow, onAdd, onClose, al
         }
     //If I added it, it would be an endless loop, if weird bugs happen look here
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [presetItemsStorage, whatToShow, alreadyHave])
+    }, [presetItemsStorage, whatToShow, alreadyHave, open])
 
     return (
         <Modal open={open} size="tiny">
@@ -61,30 +61,34 @@ export default function ImportFromStandard({open, whatToShow, onAdd, onClose, al
                 </Table.Header>
                 <Table.Body>
                     {
-                        Object.keys(presetItems).map( key => {
-                            let checkbox=null;
-                            let toggleFunction=null;
-                            if (presetItems[key].alreadyHave){
-                               checkbox=<Checkbox disabled checked="true"/>
-                            }else{
-                                toggleFunction=(e)=>{
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    const newPreset={...presetItems};
-                                    newPreset[key].checked=!(newPreset[key].checked);
-                                    setPresetItems(newPreset);
-                                };
-                                checkbox=<Checkbox checked={presetItems[key].checked} onChange={toggleFunction}/>
-                            }
+                        Object.keys(presetItems).length
+                        ?
+                            Object.keys(presetItems).map( key => {
+                                let checkbox=null;
+                                let toggleFunction=null;
+                                if (presetItems[key].alreadyHave){
+                                checkbox=<Checkbox disabled checked={true}/>
+                                }else{
+                                    toggleFunction=(e)=>{
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        const newPreset={...presetItems};
+                                        newPreset[key].checked=!(newPreset[key].checked);
+                                        setPresetItems(newPreset);
+                                    };
+                                    checkbox=<Checkbox checked={presetItems[key].checked} onChange={toggleFunction}/>
+                                }
 
-                            return  <Table.Row disabled={presetItems[key].alreadyHave} onClick={toggleFunction}>
-                                        <Table.Cell>{checkbox}</Table.Cell>
-                                        <Table.Cell>{presetItems[key].value.name}</Table.Cell>
-                                        <Table.Cell>{presetItems[key].value.weight}</Table.Cell>
-                                        <Table.Cell>{calcArm(presetItems[key].value.weight, presetItems[key].value.moment)}</Table.Cell>
-                                        <Table.Cell>{presetItems[key].value.moment}</Table.Cell>
-                                    </Table.Row>
-                    })
+                                return  <Table.Row key={key} disabled={presetItems[key].alreadyHave} onClick={toggleFunction}>
+                                            <Table.Cell>{checkbox}</Table.Cell>
+                                            <Table.Cell>{presetItems[key].value.name}</Table.Cell>
+                                            <Table.Cell>{presetItems[key].value.weight}</Table.Cell>
+                                            <Table.Cell>{calcArm(presetItems[key].value.weight, presetItems[key].value.moment)}</Table.Cell>
+                                            <Table.Cell>{presetItems[key].value.moment}</Table.Cell>
+                                        </Table.Row>
+                            })
+                        :
+                            <Table.Row><Table.Cell colSpan='5' disabled textAlign='center'>no preset items</Table.Cell></Table.Row>
                     }
                 </Table.Body>
             </Table>

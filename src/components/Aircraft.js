@@ -19,9 +19,15 @@ function NewAircraftModal({onAdd, onCloseModal, isOpen}){
             <Modal.Content>
                 <Modal.Description>
                     <Form>
-                        <Form.Field value={tail} onChange={(e)=>setTail(e.target.value)} control={Input} label='Tail' placeholder='Tail'/>
-                        <Form.Field value={weight} onChange={(e)=>setWeight(e.target.value)} control={Input} label='Weight' placeholder='Weight'/>
-                        <Form.Field value={moment} onChange={(e)=>setMoment(e.target.value)} control={Input} label='Mom' placeholder='Moment'/>
+                        <Form.Field>
+                            <Form.Input value={tail} onChange={(e)=>setTail(e.target.value)} type='text' label='Tail' placeholder='Tail'/>
+                        </Form.Field>
+                        <Form.Field>
+                            <Form.Input value={weight} onChange={(e)=>setWeight(e.target.value)} type='number' label='Weight' placeholder='Weight'/>
+                        </Form.Field>
+                        <Form.Field>
+                            <Form.Input value={moment} onChange={(e)=>setMoment(e.target.value)} type='number' label='Mom' placeholder='Moment'/>
+                        </Form.Field>
                     </Form>
                 </Modal.Description>
             </Modal.Content>
@@ -56,9 +62,15 @@ function EditAircraftModal({onEdit, onCloseModal, aircraft}){
             <Modal.Content>
                 <Modal.Description>
                     <Form>
-                        <Form.Field value={tail} onChange={(e)=>setTail(e.target.value)} control={Input} label='Tail' placeholder='Tail'/>
-                        <Form.Field value={weight} onChange={(e)=>setWeight(e.target.value)} control={Input} label='Weight' placeholder='Weight'/>
-                        <Form.Field value={moment} onChange={(e)=>setMoment(e.target.value)}control={Input} label='Moment' placeholder='Moment'/>
+                        <Form.Field>
+                            <Form.Input value={tail || ''} onChange={(e)=>setTail(e.target.value)} type='text' label='Tail' placeholder='Tail'/>
+                        </Form.Field>
+                        <Form.Field>
+                            <Form.Input value={weight || ''} onChange={(e)=>setWeight(e.target.value)} type='number' label='Weight' placeholder='Weight'/>
+                        </Form.Field>
+                        <Form.Field>
+                            <Form.Input value={moment || ''} onChange={(e)=>setMoment(e.target.value)} type='number' label='Mom' placeholder='Moment'/>
+                        </Form.Field>
                     </Form>
                 </Modal.Description>
             </Modal.Content>

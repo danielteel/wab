@@ -1,8 +1,9 @@
 import { Header} from 'semantic-ui-react';
-import { useLocalStorageArray } from '../useLocalStorage';
-import {realNumber, displayVal, calcArm} from '../common';
-import { getFuelMoment, taxiTakeOffFuelWeight, landingFuelWeight, landingFuelMoment } from '../getFuelMoment';
-import './viewForm.css';
+import { useLocalStorageArray } from '../../useLocalStorage';
+import {realNumber, displayVal, calcArm} from '../../common';
+import { getFuelMoment, taxiTakeOffFuelWeight, landingFuelWeight, landingFuelMoment } from '../../getFuelMoment';
+import './formf-summary.css';
+import React from 'react';
 
 const total = (...args) => args.reduce( (prev, current) => (prev+realNumber(current)), 0);
 const difference = (...args) => args.reduce( (prev, current) => (realNumber(prev)-realNumber(current)));
@@ -93,8 +94,20 @@ export default function ViewFormF({formF}){
                 </div>
             </div>
             <div className="wab split-grid tbl tbr tbt">
-                <div className='wab br'>
-                    REMARKS
+                <div className='wab br tbb'>
+                    <div className='wab bold pad'>REMARKS</div>
+                    <div className='wab pad'>
+                        ACFT INIT - {Math.round(aircraft.weight)} / {Math.round(calcArm(aircraft.weight, aircraft.moment))}
+                    </div>
+                    <div className='wab pad'>
+                        Kit - {Math.round(kitWeight)} / {Math.round(calcArm(kitWeight, kitMoment))}
+                    </div>
+                    <div className='wab pad'>
+                        Cargo - {Math.round(cargoWeight)} / {Math.round(calcArm(cargoWeight, cargoMoment))}
+                    </div>
+                    <div className='wab pad'>
+                        Kit+Cargo - {Math.round(total(kitWeight, cargoWeight))} / {Math.round(calcArm(total(kitWeight, cargoWeight), total(kitMoment, cargoMoment)))}
+                    </div>
                 </div>
                 <div className='wab basic-grid bl'>
                     <div className='wab m c br bold'>REF</div>
@@ -127,12 +140,12 @@ export default function ViewFormF({formF}){
                     formF.kit.length
                     ?
                         formF.kit.map( (item, index) => {
-                            return (<>
+                            return (<React.Fragment key={'kit'+item.name+'-'+item.weight+'-'+item.moment}>
                                 <div className={'wab m c br bold '+(index===0?'bt':'')}>{index===0?8:null}</div>
                                 <div className= 'wab m   bt br pad'>{item.name}</div>
                                 <Weight className='bt br' value={item.weight}/>
                                 <Moment className='bt' value={item.moment}/>
-                            </>)
+                            </React.Fragment>)
                         })
                     :
                         <>
@@ -168,12 +181,12 @@ export default function ViewFormF({formF}){
                     ?   
                         formF.cargo.map( (item, index) => {
                             const tbt=index===0?'tbt':null;
-                            return (<>
+                            return (<React.Fragment key={'cargo'+item.name+'-'+item.weight+'-'+item.moment}>
                                 <div className={'wab m c br bold '+tbt}>{index===0?13:null}</div>
                                 <div className={'wab m   bt br pad '+tbt}>{item.name}</div>
                                 <Weight className={'bt br '+tbt} value={item.weight}/>
                                 <Moment className={'bt '+tbt} value={item.moment}/>
-                            </>)
+                            </React.Fragment>)
                         })
                     :
                         <>
@@ -181,10 +194,10 @@ export default function ViewFormF({formF}){
                         </>
                     }
                     {
-                        formF.cargo.length-formF.kit.length < 35
+                        formF.cargo.length-formF.kit.length < 32
                         ?
-                            (new Array(35-formF.cargo.length-formF.kit.length)).fill(null).map( a => {
-                                return <><div className='wab m c br'>&nbsp;</div><div className='wab bt br'/> <div className='wab bt br'/> <div className='wab bt'/></>
+                            (new Array(32-formF.cargo.length-formF.kit.length)).fill(null).map( (a,index) => {
+                                return <React.Fragment key={'blank'+index}><div className='wab m c br'>&nbsp;</div><div className='wab bt br'/> <div className='wab bt br'/> <div className='wab bt'/></React.Fragment>
                             })
                         :
                             null
