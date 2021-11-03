@@ -16,7 +16,7 @@ function doesItAlreadyExist(item, alreadyHave){
     return false;
 }
 
-export default function ImportFromStandard({whatToShow, onAdd, onClose, alreadyHave}){
+export default function ImportFromStandard({open, whatToShow, onAdd, onClose, alreadyHave}){
     const [presetItemsStorage]=useLocalStorageArray('wab',whatToShow);
     
     const [presetItems, setPresetItems] = useState({});
@@ -46,7 +46,7 @@ export default function ImportFromStandard({whatToShow, onAdd, onClose, alreadyH
     }, [presetItemsStorage, whatToShow, alreadyHave])
 
     return (
-        <Modal open={!!whatToShow} size="tiny">
+        <Modal open={open} size="tiny">
             <Modal.Header>Import from {whatToShow} presets</Modal.Header>
         <Modal.Content>
             <Table selectable compact unstackable>

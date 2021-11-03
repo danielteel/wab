@@ -16,6 +16,10 @@ export default function ViewFormF({formF}){
 
     let aircraft = getAircraftFromKey(formF.aircraft) || {weight: 0, moment: 0, name: ''};
 
+    
+    let dateObj=new Date(formF.date);
+    let date=dateObj.getFullYear()+'/'+String(dateObj.getMonth()+1).padStart(2,'0')+'/'+String(dateObj.getDate()).padStart(2,'0');
+
     const kitWeight = formF.kit.reduce( (prev, current)=>prev+realNumber(current.weight), 0);
     const kitMoment = formF.kit.reduce( (prev, current)=>prev+realNumber(current.moment), 0);
     const operatingWeight = total(aircraft.weight, formF.crew.weight, kitWeight);
@@ -61,6 +65,7 @@ export default function ViewFormF({formF}){
             <div className="wab mission-grid tbt tbr tbl">
                 <div className='wab m br pad'>
                     <span className='wab bold'>DATE (YYYY/MM/DD)</span>
+                    <span className='wab push-right'>{date}</span>
                 </div>
                 <div className='wab m br pad'>
                     <span className='wab bold'>AIRCRAFT</span>
@@ -74,6 +79,7 @@ export default function ViewFormF({formF}){
                 </div>
                 <div className='wab m br bt pad'>
                     <span className='wab bold'>MISSION</span>
+                    <span className='wab push-right'>{formF.mission}</span>
                 </div>
                 <div className='wab m br bt pad'>
                     <span className='wab bold'>SERIAL NO.</span>

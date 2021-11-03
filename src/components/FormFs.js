@@ -7,7 +7,8 @@ import FormF from "./FormF";
 function newFormFObj(){
     return {
         created: (new Date()).toDateString(),
-        name: "untitled",
+        date: (new Date()).toDateString(),
+        mission: "untitled",
         aircraft: null,
         crew:{
             weight: 660,
@@ -55,7 +56,7 @@ export default function FormFs(){
                   </Table.HeaderCell>
               </Table.Row>
               <Table.Row>
-                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Mission</Table.HeaderCell>
                   <Table.HeaderCell>Tail</Table.HeaderCell>
                   <Table.HeaderCell>Created</Table.HeaderCell>
                   <Table.HeaderCell></Table.HeaderCell>
@@ -67,7 +68,7 @@ export default function FormFs(){
                 return (
                     <Table.Row>
                         <Table.Cell>
-                            {formF.value.name}
+                            {formF.value.mission}
                         </Table.Cell>
                         <Table.Cell>
                             {getAircraftFromKey(formF.value.aircraft)?.tail}
