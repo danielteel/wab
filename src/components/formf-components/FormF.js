@@ -20,7 +20,7 @@ export default function FormF({formF, mergeFormF, close}){
     const openWindow = useRef(null);
 
     return <>
-        <ReactWindow openWindow={openWindow}><Segment><EditBasicDetails formF={formF} mergeFormF={mergeFormF}/><ViewFormF formF={formF}/></Segment></ReactWindow>
+        <ReactWindow openWindow={openWindow}><Segment><ViewFormF formF={formF}/></Segment></ReactWindow>
 
         <Button icon="caret left" primary content="Back" onClick={()=>close()}/>
 
