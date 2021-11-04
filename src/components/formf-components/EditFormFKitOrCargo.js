@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Segment } from "semantic-ui-react";
-import KitOrCargo from '../KitOrCargo';
+import { Button } from "semantic-ui-react";
+import KitOrCargo from '../kit-or-cargo/KitOrCargo';
 import ImportFromStandard from "./ImportFromStandard";
 
 export default function EditFormFKitOrCargo({formF, mergeFormF, kit, cargo}){

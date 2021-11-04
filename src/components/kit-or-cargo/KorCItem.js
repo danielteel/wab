@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Input, Table, Button, Modal } from "semantic-ui-react";
-import { formatArm, formatWeight, formatMoment, realNumber, momentSimplifier } from "../common";
+import { formatArm, formatWeight, formatMoment, realNumber, momentSimplifier } from "../../common";
 
-import cabin from '../cabin.png';
+import cabin from './cabin.png';
 
 const noPadCell={padding:'0px'};
 const noBorderInput={style:{border:'0px'}};

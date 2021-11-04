@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Button, Header, Table } from "semantic-ui-react";
 import KOrCItem from "./KorCItem";
-import {calcArm, formatMoment, formatWeight} from '../common';
+import {calcArm, formatMoment, formatWeight} from '../../common';
 
 export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem, useIndexes, showTotals}){
     const setFocusToNew = useRef(false);

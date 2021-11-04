@@ -8,35 +8,34 @@ function copyStyles(src, dest) {
     Array.from(src.fonts).forEach(font => dest.fonts.add(font))
 }
 
-export default function ReactWindow(props){
+export default function ReactWindow({openWindow, ...props}){
     const [container, setContainer] = useState(null);
-    const newWindow = useRef(null);
-  
+    const reactWindow = useRef(null);
+
+    openWindow.current=(x, y, w, h)=>{
+        if (!container) return;
+
+        try {
+            reactWindow.current.close(); 
+        } catch {
+        }
+
+        const newWindow = window.open("","","width="+w+",height="+h+",left="+x+",top="+y);
+
+        reactWindow.current=newWindow;
+        reactWindow.current.document.body.appendChild(container);
+        copyStyles(window.document, reactWindow.current.document);
+    }
+
     useEffect(() => {
-      // Create container element on client-side
-      setContainer(document.createElement("div"));
+        setContainer(document.createElement("div"));
+        return ()=>{
+            try {
+                reactWindow.current.close(); 
+            } catch {
+            }
+        };
     }, []);
-  
-    useEffect(() => {
-      // When container is ready
-      if (container) {
-        // Create window
-        newWindow.current = window.open(
-          "",
-          "",
-          "width=600,height=400,left=200,top=200"
-        );
-        // Append container
-        newWindow.current.document.body.appendChild(container);
-  
-        // Save reference to window for cleanup
-        const curWindow = newWindow.current;
-        copyStyles(window.document, newWindow.current.document);
-        curWindow.print();
-        // Return cleanup function
-        return () => curWindow.close();
-      }
-    }, [container]);
-  
+
     return container && createPortal(props.children, container);
   };

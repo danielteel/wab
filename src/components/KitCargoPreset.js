@@ -1,5 +1,5 @@
 import { useLocalStorageArray } from "../useLocalStorage";
-import KitOrCargo from "./KitOrCargo";
+import KitOrCargo from "./kit-or-cargo/KitOrCargo";
 
 export default function KitCargoPreset({isKit}){
     const [items, addItem, deleteItem, setItem, mergeItem]=useLocalStorageArray('wab', isKit?'kit':'cargo');
