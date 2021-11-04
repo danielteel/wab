@@ -4,7 +4,10 @@ import { formatWeight } from "../../common";
 import { getFuelMoment, maxFuel } from '../../getFuelMoment';
 
 export default function EditFormFFuel({formF, mergeFormF}){
- 
+    const setInternalFuel = () => {
+        let newWeight = formatWeight(formF.fuel.weight);
+        mergeFormF({fuel: {weight: newWeight, moment: getFuelMoment(newWeight)}});
+    }
     return <>
         <Form>
             <Form.Field>
@@ -13,8 +16,8 @@ export default function EditFormFFuel({formF, mergeFormF}){
                 error={formF.fuel.weight>maxFuel || formF.fuel.weight<0}
                 label='Internal fuel weight' value={formF.fuel?.weight}
                 onChange={(e)=>mergeFormF({fuel: {weight: e.target.value, moment: getFuelMoment(e.target.value)}})}
-                onBlur={()=>mergeFormF({fuel: {weight: formatWeight(formF.fuel.weight), moment: getFuelMoment(formatWeight(formF.fuel.weight))}})}
-                onKeyPress={e => {if (e.key === 'Enter') mergeFormF({fuel: {weight: formatWeight(formF.fuel.weight), moment: getFuelMoment(formatWeight(formF.fuel.weight))}})}}
+                onBlur={setInternalFuel}
+                onKeyPress={e => {if (e.key === 'Enter') setInternalFuel()}}
             />
             </Form.Field>
             <Form.Field>
