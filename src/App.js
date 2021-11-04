@@ -30,9 +30,12 @@ function App(){
 
     return (
         <Container>
-            <Segment attached="top"><Header as='h1' textAlign="center">WAB</Header></Segment>
+            <Segment attached="top">
+                <Header as='h1' textAlign="center">WAB</Header>
+                <Header as='h6' textAlign='center' style={{color:'#00000033'}}>Dan Teel</Header>
+            </Segment>
             <WABMenu selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
-            <Segment attached="bottom">{screenToRender}</Segment>
+            <Segment attached="bottom" secondary>{screenToRender}</Segment>
             <Header as='h6' textAlign='center'>
                 Moment Simplifier {momentSimplifier}
             </Header>

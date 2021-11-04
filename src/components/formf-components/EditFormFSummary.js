@@ -194,9 +194,9 @@ export default function ViewFormF({formF}){
                         </>
                     }
                     {
-                        formF.cargo.length-formF.kit.length < 32
+                        formF.cargo.length-formF.kit.length < 30
                         ?
-                            (new Array(32-formF.cargo.length-formF.kit.length)).fill(null).map( (a,index) => {
+                            (new Array(30-formF.cargo.length-formF.kit.length)).fill(null).map( (a,index) => {
                                 return <React.Fragment key={'blank'+index}><div className='wab m c br'>&nbsp;</div><div className='wab bt br'/> <div className='wab bt br'/> <div className='wab bt'/></React.Fragment>
                             })
                         :

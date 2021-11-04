@@ -19,6 +19,8 @@ function newFormFObj(){
             weight: 0,
             moment: 0
         },
+        taxiTakeOffFuelBurn: 500,
+        landingFuel: 1500,
         cargo:[]
     };
 }

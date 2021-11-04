@@ -17,6 +17,7 @@ pre {
 
 .background {
     display: flex;
+    justify-content: center;
     flex-grow: 1;
     background-color: #333333;
     min-height: 100vh;
