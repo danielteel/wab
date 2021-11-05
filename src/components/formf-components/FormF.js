@@ -1,11 +1,8 @@
-import {Button, Divider, Segment, Tab} from 'semantic-ui-react';
+import {Button, Divider, Tab} from 'semantic-ui-react';
 import ViewFormF from "./EditFormFSummary";
 import EditBasicDetails from './EditBasicDetails';
 import EditFormFKitOrCargo from './EditFormFKitOrCargo';
 import EditFormFFuel from './EditFormFFuel';
-
-import { useRef } from 'react';
-import ReactWindow from '../ReactWindow';
 
 
 export default function FormF({formF, mergeFormF, close}){
@@ -19,9 +16,7 @@ export default function FormF({formF, mergeFormF, close}){
 
 
     return <>
-
         <Button icon="caret left" primary content="Back" onClick={()=>close()}/>
-
         <Divider/>
         <Tab panes={panes} renderActiveOnly/>
     </>

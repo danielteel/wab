@@ -1,7 +1,7 @@
-import { Header} from 'semantic-ui-react';
+import { Header, Button } from 'semantic-ui-react';
 import { useLocalStorageArray } from '../../useLocalStorage';
 import {realNumber, displayVal, calcArm} from '../../common';
-import { getFuelMoment, taxiTakeOffFuelWeight, landingFuelWeight, landingFuelMoment } from '../../getFuelMoment';
+import { getFuelMoment, fwdMATDryWeight, fwdMATDryMoment, centerMATDryWeight, centerMATDryMoment } from '../../getFuelMoment';
 import './formf-summary.css';
 import React from 'react';
 
@@ -17,29 +17,42 @@ export default function ViewFormF({formF}){
 
     let aircraft = getAircraftFromKey(formF.aircraft) || {weight: 0, moment: 0, name: ''};
 
-    
     let dateObj=new Date(formF.date);
     let date=dateObj.getFullYear()+'/'+String(dateObj.getMonth()+1).padStart(2,'0')+'/'+String(dateObj.getDate()).padStart(2,'0');
 
+    const rampFuelWeight = realNumber(formF.fuel.weight);
+    const rampFuelMoment = getFuelMoment(rampFuelWeight);
+
+    const takeOffFuelWeight = difference(rampFuelWeight, formF.fuel.taxiTakeOffFuelBurn);
+    const takeOffFuelMoment = getFuelMoment(takeOffFuelWeight);
+
+    const taxiTakeoffFuelWeight = difference(rampFuelWeight, takeOffFuelWeight);
+    const taxiTakeoffFuelMoment = difference(rampFuelMoment, takeOffFuelMoment);
+
+    const landingFuelWeight = realNumber(formF.fuel.landingFuel);
+    const landingFuelMoment = getFuelMoment(landingFuelWeight);
+
+    const extraEquipment = [];
+    if (formF.fuel.fwdMATInstalled) extraEquipment.push({name:'FWD MAT', weight: fwdMATDryWeight, moment: fwdMATDryMoment});
+    if (formF.fuel.centerMATInstalled) extraEquipment.push({name:'CTR MAT', weight: centerMATDryWeight, moment: centerMATDryMoment});
+    const extraEquipmentWeight=extraEquipment.reduce( (prev, current)=>prev+realNumber(current.weight), 0);
+    const extraEquipmentMoment=extraEquipment.reduce( (prev, current)=>prev+realNumber(current.moment), 0);
+
     const kitWeight = formF.kit.reduce( (prev, current)=>prev+realNumber(current.weight), 0);
     const kitMoment = formF.kit.reduce( (prev, current)=>prev+realNumber(current.moment), 0);
-    const operatingWeight = total(aircraft.weight, formF.crew.weight, kitWeight);
-    const operatingMoment = total(aircraft.moment, formF.crew.moment, kitMoment);
+    const operatingWeight = total(aircraft.weight, formF.crew.weight, kitWeight, extraEquipmentWeight);
+    const operatingMoment = total(aircraft.moment, formF.crew.moment, kitMoment, extraEquipmentMoment);
     const cargoWeight = formF.cargo.reduce( (prev, current) => total(prev, current.weight), 0);
     const cargoMoment = formF.cargo.reduce( (prev, current) => total(prev, current.moment), 0);
-    const totalAircraftWeight = total(operatingWeight, formF.fuel.weight);
-    const totalAircraftMoment = total(operatingMoment, formF.fuel.moment);
+    const totalAircraftWeight = total(operatingWeight, rampFuelWeight);
+    const totalAircraftMoment = total(operatingMoment, rampFuelMoment);
 
-    const rampWeight = total(operatingWeight, formF.fuel.weight, cargoWeight);
-    const rampMoment = total(operatingMoment, formF.fuel.moment, cargoMoment);
+    const rampWeight = total(operatingWeight, rampFuelWeight, cargoWeight);
+    const rampMoment = total(operatingMoment, rampFuelMoment, cargoMoment);
     const rampCG = calcArm(rampWeight, rampMoment);
-
-    const takeoffFuelWeight = difference(formF.fuel.weight, taxiTakeOffFuelWeight);
-    const takeoffFuelMoment = getFuelMoment(takeoffFuelWeight);
-    const taxiTakeoffFuelMoment = difference(formF.fuel.moment, takeoffFuelMoment);
     
-    const takeoffWeight = total(operatingWeight, takeoffFuelWeight, cargoWeight);
-    const takeoffMoment = total(operatingMoment, takeoffFuelMoment, cargoMoment);
+    const takeoffWeight = total(operatingWeight, takeOffFuelWeight, cargoWeight);
+    const takeoffMoment = total(operatingMoment, takeOffFuelMoment, cargoMoment);
     const takeoffCG = calcArm(takeoffWeight, takeoffMoment);
 
     const zeroFuelWeight = total(operatingWeight, cargoWeight);
@@ -52,6 +65,14 @@ export default function ViewFormF({formF}){
 
     const content = (
         <div className='view-parent'>
+            <Button icon="" primary content="Open in PerfCalc" onClick={()=>{
+                localStorage.setItem('$OpWeight', operatingWeight);
+                localStorage.setItem('$Fuel', takeOffFuelWeight);
+                localStorage.setItem('$Cargo1', cargoWeight);
+                localStorage.setItem('$Cargo2','0');
+                window.location.assign("app.html");
+            }}/>
+
             <Header as='h3' textAlign='center'>FOR UNOFFICIAL USE ONLY</Header>
             <div className="wab header-grid tbt tbl tbr">
                 <div className='wab title-cell c m bold'>WEIGHT AND BALANCE CLEARANCE FORM F - TRANSPORT</div>
@@ -134,7 +155,22 @@ export default function ViewFormF({formF}){
 
                     <div className='wab m c bt br bold'>5</div><div className='wab bt br'/><div className='wab bt br'/><div className='wab bt'/>
                     <div className='wab m c bt br bold'>6</div><div className='wab bt br'/><div className='wab bt br'/><div className='wab bt'/>
-                    <div className='wab m c bt br bold'>7</div><div className='wab bt br'/><div className='wab bt br'/><div className='wab bt'/>
+                    {/*Extra Equipment (MATs, ...)*/
+                    extraEquipment.length
+                    ?
+                    extraEquipment.map( (item, index) => {
+                            return (<React.Fragment key={'kit'+item.name+'-'+item.weight+'-'+item.moment}>
+                                <div className={'wab m c br bold '+(index===0?'bt':'')}>{index===0?7:null}</div>
+                                <div className= 'wab m   bt br pad'>{item.name}</div>
+                                <Weight className='bt br' value={item.weight}/>
+                                <Moment className='bt' value={item.moment}/>
+                            </React.Fragment>)
+                        })
+                    :
+                        <>
+                            <div className='wab m c br bt bold'>7</div><div className='wab bt br'/><div className='wab bt br'/><div className='wab bt'/>
+                        </>
+                    }
 
                     {/*Kit*/
                     formF.kit.length
@@ -159,15 +195,11 @@ export default function ViewFormF({formF}){
                     <Moment className='bt tbt bold' value={operatingMoment}/>
 
 
-                    <div className='wab m c tbt br'></div>
-                    <div className='wab m   tbt br pad'>Internal Fuel</div>
-                    <Weight className='bt tbt br' value={formF.fuel.weight}/>
-                    <Moment className='bt tbt' value={formF.fuel.moment}/>
 
-                    <div className='wab m c br bold'>10</div>
-                    <div className='wab m   bt br bold pad'>Total Fuel</div>
-                    <Weight className='bt bt br bold' value={formF.fuel.weight}/>
-                    <Moment className='bt bt bold' value={formF.fuel.moment}/>
+                    <div className='wab m c br tbt bold'>10</div>
+                    <div className='wab m   tbt br bold pad'>Total Fuel</div>
+                    <Weight className='bt tbt br bold' value={rampFuelWeight}/>
+                    <Moment className='bt tbt bold' value={rampFuelMoment}/>
 
 
                     <div className='wab m c tbt br bold'>12</div>
@@ -190,7 +222,7 @@ export default function ViewFormF({formF}){
                         })
                     :
                         <>
-                        <div className='wab m c br tbt bold'>13</div><div className='wab tbt br'/><div className='wab tbt br'/><div className='wab tbt'/>
+                            <div className='wab m c br tbt bold'>13</div><div className='wab tbt br'/><div className='wab tbt br'/><div className='wab tbt'/>
                         </>
                     }
                     {
@@ -218,7 +250,7 @@ export default function ViewFormF({formF}){
                     
                     <div className='wab m c br bt bold'>18</div>
                     <div className='wab m   bt br pad'>Taxi/Takeoff Fuel</div>
-                    <Weight className='bt br' value={0-taxiTakeOffFuelWeight}/>
+                    <Weight className='bt br' value={0-taxiTakeoffFuelWeight}/>
                     <Moment className='bt' value={0-taxiTakeoffFuelMoment}/>
 
                     <div className='wab m c br bt bold'>19</div>

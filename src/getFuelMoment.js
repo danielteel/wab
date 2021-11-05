@@ -143,6 +143,7 @@ let jp8=[
 
 function getFuelMoment(fuelWeight){
     fuelWeight=Number(fuelWeight);
+    if (!isFinite(fuelWeight)) fuelWeight=0;
 
     for (let i=0;i<jp8.length-1;i++){
         if (fuelWeight>=jp8[i].weight && fuelWeight<=jp8[i+1].weight){
@@ -154,9 +155,18 @@ function getFuelMoment(fuelWeight){
     return "Cant determine";
 }
 
-const maxFuel = 13572;
-const taxiTakeOffFuelWeight=500;
-const landingFuelWeight=1500;
-const landingFuelMoment=getFuelMoment(landingFuelWeight);
+const maxFuel = (fwdMatInstalled, centerMATInstalled) => {
+    if (!fwdMatInstalled && !centerMATInstalled) return 13572;//No MATs installed
+    if (fwdMatInstalled && !centerMATInstalled) return 13572+2350;//Only foward MAT installed
+    if (!fwdMatInstalled && centerMATInstalled) return 13572+2200;//Only center MAT installed
+    return 13572+2350+2200;//Both MATs installed
+}
 
-export {getFuelMoment, maxFuel, taxiTakeOffFuelWeight, landingFuelWeight, landingFuelMoment};
+const fwdMATDryWeight = 906.7;
+const fwdMATDryMoment = 330;
+
+const centerMATDryWeight = 878.0;
+const centerMATDryMoment = 389;
+
+
+export {getFuelMoment, maxFuel, fwdMATDryWeight, fwdMATDryMoment, centerMATDryWeight, centerMATDryMoment};
