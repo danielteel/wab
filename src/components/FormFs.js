@@ -8,7 +8,7 @@ function newFormFObj(){
     return {
         created: (new Date()).toDateString(),
         date: (new Date()).toDateString(),
-        mission: "untitled",
+        mission: "TRAINING",
         aircraft: null,
         crew:{
             weight: 660,
@@ -16,12 +16,16 @@ function newFormFObj(){
         },
         kit:[],
         fuel:{
-            weight: 0,
-            moment: 0
+            internal: 0,
+            fwdMAT: 0,
+            aftMAT: 0,
+            fwdMATInstalled: false,
+            aftMATInstalled: false
         },
         taxiTakeOffFuelBurn: 500,
         landingFuel: 1500,
         cargo:[]
+
     };
 }
 
