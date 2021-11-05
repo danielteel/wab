@@ -65,7 +65,7 @@ export default function ViewFormF({formF}){
 
     const content = (
         <div className='view-parent'>
-            <Button icon="" primary content="Open in PerfCalc" onClick={()=>{
+            <Button icon="" primary content="Copy To PerfCalc" onClick={()=>{
                 localStorage.setItem('$OpWeight', operatingWeight);
                 localStorage.setItem('$Fuel', takeOffFuelWeight);
                 localStorage.setItem('$Cargo1', cargoWeight);
