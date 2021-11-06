@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Table, Header} from "semantic-ui-react";
 import { useLocalStorageArray } from "../useLocalStorage"
 import ConfirmationModal from "./ConfirmationModal";
@@ -35,11 +35,27 @@ function newFormFObj(){
 
 
 export default function FormFs(){
-    const [formFs, addFormF, deleteFormF, , mergeFormF] = useLocalStorageArray('wab','formfs');
+    const [formFs, addFormF, deleteFormF, , mergeFormF, getFormFFromKey] = useLocalStorageArray('wab','formfs');
     const [ , , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
 
     const [deleteModalKey, setDeleteModalKey]=useState(null);
-    const [selectedFormF, setSelectedFormF]=useState(null);
+    const [selectedFormF, _setSelectedFormF]=useState(null);
+
+    const setSelectedFormF = (formF) => {
+        _setSelectedFormF(formF);
+        sessionStorage.setItem('formf-selected', formF?.key);
+    }
+
+    useEffect( () => {
+        const sessionFormFKey = sessionStorage.getItem('formf-selected'); 
+        if (sessionFormFKey){
+            console.log("Good Key");
+            const sessionFormF = getFormFFromKey(sessionFormFKey, true);
+            if (sessionFormF){
+                setSelectedFormF(sessionFormF);
+            }
+        }
+    }, [getFormFFromKey]);
 
     if (!!selectedFormF){
         return <FormF formF={selectedFormF.value} mergeFormF={(value)=>mergeFormF(selectedFormF.key, value)} close={()=>setSelectedFormF(null)}/>
@@ -75,7 +91,10 @@ export default function FormFs(){
           <Table.Body>
             {formFs.map( formF => {
                 return (
-                    <Table.Row key={formF.key}>
+                    <Table.Row key={formF.key} onClick={(e)=>{
+                        e.preventDefault();
+                        setSelectedFormF(formF);
+                    }}>
                         <Table.Cell>
                             {formF.value.mission}
                         </Table.Cell>
@@ -86,9 +105,17 @@ export default function FormFs(){
                             {formF.value.created}
                         </Table.Cell>
                         <Table.Cell>
-                            <Button floated='right' icon='minus' negative size='mini' onClick={()=>setDeleteModalKey(formF.key)}/>
-                            <Button floated='right' icon='copy outline' color='grey' size='mini' onClick={()=>addFormF(formF.value)}/>
-                            <Button floated='right' icon='pencil' color='blue' size='mini' onClick={()=>setSelectedFormF(formF)}/>
+                            <Button floated='right' icon='minus' negative size='mini' onClick={(e)=>{
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setDeleteModalKey(formF.key)
+                            }}/>
+                            <Button floated='right' icon='copy outline' color='grey' size='mini' onClick={(e)=>{
+                                e.preventDefault();
+                                e.stopPropagation();
+                                addFormF(formF.value)
+                            }}/>
+
                         </Table.Cell>
                     </Table.Row>
                 );

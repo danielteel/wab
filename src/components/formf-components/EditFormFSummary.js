@@ -1,4 +1,4 @@
-import { Header, Button } from 'semantic-ui-react';
+import { Header, Button, Container } from 'semantic-ui-react';
 import { useLocalStorageArray } from '../../useLocalStorage';
 import {realNumber, displayVal, calcArm} from '../../common';
 import { getFuelMoment, fwdMATDryWeight, fwdMATDryMoment, centerMATDryWeight, centerMATDryMoment } from '../../getFuelMoment';
@@ -15,7 +15,7 @@ const Arm = ({value, className, ...props}) => <div className={'wab m r pad '+cla
 export default function ViewFormF({formF}){
     const [ , , , , , getAircraftFromKey] = useLocalStorageArray('wab','aircraft');
 
-    let aircraft = getAircraftFromKey(formF.aircraft) || {weight: 0, moment: 0, name: ''};
+    let aircraft = getAircraftFromKey(formF.aircraft) || {weight: 0, moment: 0, tail: ''};
 
     let dateObj=new Date(formF.date);
     let date=dateObj.getFullYear()+'/'+String(dateObj.getMonth()+1).padStart(2,'0')+'/'+String(dateObj.getDate()).padStart(2,'0');
@@ -65,13 +65,15 @@ export default function ViewFormF({formF}){
 
     const content = (
         <div className='view-parent'>
-            <Button icon="" primary content="Copy To PerfCalc" onClick={()=>{
+            <Container textAlign='center'>
+            <Button style={{alignSelf: 'center'}} content="Open in PerfCalc" onClick={()=>{
                 localStorage.setItem('$OpWeight', operatingWeight);
                 localStorage.setItem('$Fuel', takeOffFuelWeight);
                 localStorage.setItem('$Cargo1', cargoWeight);
                 localStorage.setItem('$Cargo2','0');
                 window.location.assign("msn%20planning%20perfcalc%20for%20ref%20use%20only.html");
             }}/>
+            </Container>
 
             <Header as='h3' textAlign='center'>FOR UNOFFICIAL USE ONLY</Header>
             <div className="wab header-grid tbt tbl tbr">

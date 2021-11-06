@@ -137,9 +137,10 @@ let jp8=[
     {weight: 13300, moment: 5376.2},
     {weight: 13400, moment: 5429.3},
     {weight: 13500, moment: 5482.4},
-    {weight: 13572, moment: 5520.7}
+    {weight: 13572, moment: 5520.7},
+    {weight: 15922, moment: 6376.0},//This one and the one below, assumption that MATs are filled last
+    {weight: 18122, moment: 7350.7}//needs verification of fuel onload sequence
 ];
-
 
 function getFuelMoment(fuelWeight){
     fuelWeight=Number(fuelWeight);

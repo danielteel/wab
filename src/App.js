@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Header, Segment } from 'semantic-ui-react';
 
 import WABMenu from './components/WABMenu';
@@ -8,7 +8,17 @@ import KitCargoPreset from './components/KitCargoPreset';
 import { momentSimplifier } from './common';
 
 function App(){
-    const [selectedMenu, setSelectedMenu]=useState("formfs");
+    const [selectedMenu, _setSelectedMenu]=useState("formfs");
+
+    const setSelectedMenu = (menuId) => {
+        _setSelectedMenu(menuId);
+        sessionStorage.setItem('formf-menu', menuId);
+    }
+
+    useEffect(()=>{
+        const sessionSelectedMenu=sessionStorage.getItem('formf-menu') || 'formfs';
+        setSelectedMenu(sessionSelectedMenu);
+    }, [])
 
     let screenToRender=null;
     switch(selectedMenu){
@@ -25,6 +35,7 @@ function App(){
             screenToRender=<KitCargoPreset/>
             break;
         default:
+            setSelectedMenu('formfs');
             break;
     }
 
