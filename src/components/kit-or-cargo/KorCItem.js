@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Input, Table, Button, Modal } from "semantic-ui-react";
+import { Table, Button, Modal } from "semantic-ui-react";
 import { formatArm, formatWeight, formatMoment, realNumber, momentSimplifier } from "../../common";
+
+import InputWithBlur from '../InputWithBlur';
 
 import cabin from './cabin.png';
 
@@ -17,11 +19,11 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
     const [showCabin, setShowCabin] = useState(null);
     const cabinImageRef = useRef();
 
-    const realWeight=formatWeight(weight);
-    const realArm=formatArm(arm);
-    const realMoment=formatMoment(moment);
+    const realWeight = formatWeight(weight);
+    const realArm = formatArm(arm);
+    const realMoment = formatMoment(moment);
 
-    const keyOrIndex = () => (index!==null && index!==undefined)?index:item.key
+    const keyOrIndex = () => (index!==null && index!==undefined) ? index : item.key
 
     let weightValue, momentValue, nameValue;
     if (index!==null && index!==undefined){
@@ -44,17 +46,17 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
         }else{
             mergeItem(keyOrIndex(), {weight: realWeight});
         }
-        if (String(realWeight)!==String(weight).trim()) setWeight(realWeight);
+        setWeight(realWeight);
     }
 
     const saveMoment = () => {
         mergeItem(keyOrIndex(), {moment: realMoment});
-        if (String(realMoment)!==String(moment).trim()) setMoment(realMoment);
+        setMoment(realMoment);
     }
     const saveArm = () => {
         const newMoment = formatMoment(weightValue * realArm / momentSimplifier);
         mergeItem(keyOrIndex(), {moment: newMoment});
-        if (String(realArm)!==String(arm).trim()) setArm(realArm);
+        setArm(realArm);
     }
 
     useEffect(()=>{
@@ -74,7 +76,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                     <Modal.Content scrolling>
                         <div className="ui image fluid">
                         <img alt='' ref={cabinImageRef} src={cabin} onClick={(e)=>{     
-                                        setShowCabin({...showCabin, arm: e.nativeEvent.offsetY/cabinImageRef.current.height*650});
+                            setShowCabin({...showCabin, arm: e.nativeEvent.offsetY/cabinImageRef.current.height*650});
                         }}/>
                         </div>
                     </Modal.Content>
@@ -86,62 +88,16 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                 </Modal>
             }
             <Table.Cell style={noPadCell}>
-                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
-                    <Input
-                    ref={firstBoxRef}
-                    fluid
-                    type='text'
-                    placeholder='Name'
-                    value={name}
-                    onChange={(e)=>setName(e.target.value)}
-                    onBlur={saveName}
-                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveName()}}}
-                    input={noBorderInput}
-                    />
-                </form>
+                    <InputWithBlur type='text' placeholder='name' value={name} onChange={setName} onBlur={saveName} fluid inputRef={firstBoxRef} input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
-                    <Input
-                    fluid
-                    type='number'
-                    placeholder='Weight'
-                    value={weight}
-                    onChange={(e)=>setWeight(e.target.value)}
-                    onBlur={saveWeight}
-                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveWeight()}}}
-                    input={noBorderInput}
-                    />
-                </form>
+                    <InputWithBlur type='number' placeholder='weight' value={weight} onChange={setWeight} onBlur={saveWeight} fluid input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
-                    <Input
-                    fluid
-                    type='number'
-                    placeholder='Arm'
-                    value={arm}
-                    onChange={(e)=>setArm(e.target.value)}
-                    onBlur={saveArm}
-                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveArm()}}}
-                    input={noBorderInput}
-                    action={<Button icon='plane' tabIndex='-1' onClick={()=>setShowCabin({arm: arm, save:(v)=>setArm(v)})}/>}
-                    />
-                </form>
+                    <InputWithBlur type='number' placeholder='arm' value={arm} onChange={setArm} onBlur={saveArm} fluid input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
-                    <Input
-                    fluid
-                    type='number'
-                    placeholder='Moment'
-                    value={moment}
-                    onChange={(e)=>setMoment(e.target.value)}
-                    onBlur={saveMoment}
-                    onKeyPress={e => {if (e.key === 'Enter') {e.preventDefault();saveMoment()}}}
-                    input={noBorderInput}
-                    />
-                </form>
+                    <InputWithBlur type='number' placeholder='moment' value={moment} onChange={setMoment} onBlur={saveMoment} fluid input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell>
                 <Button tabIndex='-1' icon='minus' size='mini' negative onClick={()=>deleteItem(keyOrIndex())}/>

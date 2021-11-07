@@ -76,7 +76,7 @@ export default function KitOrCargo({title, items, addItem, deleteItem, mergeItem
 
     if (setFocusToNew.current){
         setTimeout( () => {
-            lastItemRef.current.focus();
+            lastItemRef.current?.focus();
             setFocusToNew.current=false;
         },0);
     }

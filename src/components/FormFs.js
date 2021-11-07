@@ -49,7 +49,6 @@ export default function FormFs(){
     useEffect( () => {
         const sessionFormFKey = sessionStorage.getItem('formf-selected'); 
         if (sessionFormFKey){
-            console.log("Good Key");
             const sessionFormF = getFormFFromKey(sessionFormFKey, true);
             if (sessionFormF){
                 setSelectedFormF(sessionFormF);
@@ -92,7 +91,6 @@ export default function FormFs(){
             {formFs.map( formF => {
                 return (
                     <Table.Row key={formF.key} onClick={(e)=>{
-                        e.preventDefault();
                         setSelectedFormF(formF);
                     }}>
                         <Table.Cell>
@@ -106,16 +104,13 @@ export default function FormFs(){
                         </Table.Cell>
                         <Table.Cell>
                             <Button floated='right' icon='minus' negative size='mini' onClick={(e)=>{
-                                e.preventDefault();
                                 e.stopPropagation();
                                 setDeleteModalKey(formF.key)
                             }}/>
                             <Button floated='right' icon='copy outline' color='grey' size='mini' onClick={(e)=>{
-                                e.preventDefault();
                                 e.stopPropagation();
                                 addFormF(formF.value)
                             }}/>
-
                         </Table.Cell>
                     </Table.Row>
                 );
