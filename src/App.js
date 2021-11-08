@@ -1,55 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Header, Segment } from 'semantic-ui-react';
+import { Container, Header, Segment, Tab } from 'semantic-ui-react';
 
-import WABMenu from './components/WABMenu';
 import FormFs from './components/FormFs';
 import Aircraft from './components/Aircraft';
 import KitCargoPreset from './components/KitCargoPreset';
-import { momentSimplifier } from './common';
+
+
+const defaultState = {
+    aircraft: [],
+    kitPresets: [],
+    cargoPresets: [],
+    formfs: []
+};
 
 function App(){
-    const [selectedMenu, _setSelectedMenu]=useState("formfs");
+    const [state, setState] = useState(defaultState);
 
-    const setSelectedMenu = (menuId) => {
-        _setSelectedMenu(menuId);
-        sessionStorage.setItem('formf-menu', menuId);
-    }
-
-    useEffect(()=>{
-        const sessionSelectedMenu=sessionStorage.getItem('formf-menu') || 'formfs';
-        setSelectedMenu(sessionSelectedMenu);
-    }, [])
-
-    let screenToRender=null;
-    switch(selectedMenu){
-        case 'formfs':
-            screenToRender=<FormFs/>
-            break;
-        case 'aircraft':
-            screenToRender=<Aircraft/>
-            break;
-        case 'standardkit':
-            screenToRender=<KitCargoPreset isKit/>
-            break;
-        case 'standardcargo':
-            screenToRender=<KitCargoPreset/>
-            break;
-        default:
-            setSelectedMenu('formfs');
-            break;
-    }
-
+    const panes = [
+        {
+            menuItem: 'Form Fs',
+            render: () => <Tab.Pane><FormFs/></Tab.Pane>
+        },
+        {
+            menuItem: 'Aircraft',
+            render: () => <Tab.Pane><Aircraft/></Tab.Pane>
+        },
+        {
+            menuItem: 'Kit Presets',
+            render: () => <Tab.Pane><KitCargoPreset isKit/></Tab.Pane>
+        },
+        {
+            menuItem: 'Cargo Presets',
+            render: () => <Tab.Pane><KitCargoPreset/></Tab.Pane>
+        },
+    ];
     return (
         <Container>
             <Segment attached="top">
                 <Header as='h1' textAlign="center">WAB</Header>
-                <Header as='h6' textAlign='center' style={{color:'#00000033'}}>Dan Teel</Header>
             </Segment>
-            <WABMenu selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
-            <Segment attached="bottom" secondary>{screenToRender}</Segment>
-            <Header as='h6' textAlign='center'>
-                Moment Simplifier {momentSimplifier}
-            </Header>
+            <Tab menu={{tabular: false}} panes={panes}/>
         </Container>
     );
 }
