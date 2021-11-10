@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Container, Header, Segment, Tab } from 'semantic-ui-react';
 
 import FormFs from './components/FormFs';
