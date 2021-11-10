@@ -16,7 +16,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
     const [weight, setWeight] = useState('');
     const [arm, setArm] = useState('');
     const [moment, setMoment] = useState('');
-    const [showCabin, setShowCabin] = useState(null);
+    //const [showCabin, setShowCabin] = useState(null);
     const cabinImageRef = useRef();
 
     const realWeight = formatWeight(weight);
@@ -71,7 +71,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
 
     return (
         <Table.Row>
-            {!showCabin?null:
+            {/* {!showCabin?null:
                 <Modal basic size='fullscreen' open onClose={()=>setShowCabin(null)}>
                     <Modal.Content scrolling>
                         <div className="ui image fluid">
@@ -86,7 +86,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                         <Button onClick={()=>{showCabin.save(showCabin.arm);setShowCabin(null)}}>Save</Button>
                     </Modal.Actions>
                 </Modal>
-            }
+            } */}
             <Table.Cell style={noPadCell}>
                     <InputWithBlur type='text' placeholder='name' value={name} onChange={setName} onBlur={saveName} fluid inputRef={firstBoxRef} input={noBorderInput}/>
             </Table.Cell>

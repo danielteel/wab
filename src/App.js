@@ -43,7 +43,7 @@ function App(){
         <Container>
             <Segment attached="top">
                 <Header as='h1' textAlign="center">WAB</Header>
-                <Header as='h6' textAlign='center' style={{color:'#00000033'}}>Dan Teel</Header>
+                <Header as='h6' textAlign='center' style={{color:'#00000033'}}>Reference Use Only</Header>
             </Segment>
             <WABMenu selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
             <Segment attached="bottom" secondary>{screenToRender}</Segment>

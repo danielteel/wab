@@ -18,8 +18,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && gulp postbuild",
-    "build-all": "cd ./src/assets/fomantic && npx gulp build  && cd ./../../.. && react-scripts build && gulp postbuild",
+    "build": "react-scripts build && gulp postbuild && gulp rename",
+    "build-all": "cd ./src/assets/fomantic && npx gulp build  && cd ./../../.. && react-scripts build && gulp postbuild && gulp rename",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

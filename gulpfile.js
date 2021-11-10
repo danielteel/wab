@@ -7,6 +7,7 @@ const fs = require('fs');
 
 const buildDir = __dirname+path.sep+'build'+path.sep;   //Customize this to meet your needs
 const buildFileName = "index.html";                     //and this one as well
+const finalBuildName="WAB For Ref Use Only.html";
 
 
 const fileRegEx = /["']\/?([\w-// /.]+\.(ico|png|jpg|jpeg|svg|json))["']/gi
@@ -111,4 +112,11 @@ gulp.task('postbuild', async ()=>{
                                     }
         ))
         .pipe(gulp.dest('./build'))
+})
+
+
+gulp.task('rename', async () => {
+    await fs.rename(buildDir+buildFileName, buildDir+finalBuildName, ()=>{
+        console.log("Renamed "+buildFileName+" to "+finalBuildName);
+    });
 })

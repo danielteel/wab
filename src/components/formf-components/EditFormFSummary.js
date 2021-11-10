@@ -71,7 +71,7 @@ export default function ViewFormF({formF}){
                 localStorage.setItem('$Fuel', takeOffFuelWeight);
                 localStorage.setItem('$Cargo1', cargoWeight);
                 localStorage.setItem('$Cargo2','0');
-                window.location.assign("msn%20planning%20perfcalc%20for%20ref%20use%20only.html");
+                window.location.assign("Msn Planning Aid Perf Calc For Ref Use Only.html");
             }}/>
             </Container>
 
