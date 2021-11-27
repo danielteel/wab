@@ -39,7 +39,7 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
     const saveName = () => mergeItem(keyOrIndex(), {name: name});
 
 
-    const saveWeight = () => {
+    const saveWeight = (newValue) => {
         if (String(arm).trim()!==""){
             const newMoment = formatMoment(realWeight*realArm/momentSimplifier);
             mergeItem(keyOrIndex(), {weight: realWeight, moment: newMoment});
@@ -49,14 +49,14 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
         setWeight(realWeight);
     }
 
-    const saveMoment = () => {
-        mergeItem(keyOrIndex(), {moment: realMoment});
-        setMoment(realMoment);
+    const saveMoment = (newValue) => {
+        mergeItem(keyOrIndex(), {moment: formatMoment(newValue!==undefined?newValue:realMoment)});
+        setMoment(formatMoment(newValue!==undefined?newValue:realMoment));
     }
-    const saveArm = () => {
-        const newMoment = formatMoment(weightValue * realArm / momentSimplifier);
-        mergeItem(keyOrIndex(), {moment: newMoment});
-        setArm(realArm);
+    const saveArm = (newValue) => {
+        const newMoment = formatMoment(weightValue * (newValue!==undefined?newValue:realArm) / momentSimplifier);
+        mergeItem(keyOrIndex(), {moment: newValue!==undefined?newValue:newMoment});
+        setArm(newValue!==undefined?newValue:realArm);
     }
 
     useEffect(()=>{
