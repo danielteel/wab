@@ -4,27 +4,27 @@ import {useRef, useState} from 'react';
 import NumberPad from './NumberPad';
 
 
-export default function InputWithBlur({isFormInput, onChange, onBlur, value, inputRef, type, ...props}){
+export default function MobileInput({isFormInput, onChange, value, inputRef, type, placeholder, ...props}){
     const touchStartHere = useRef(false);
     const [showNumberPad, setShowNumberPad] = useState(false);
-    if (value !== undefined && value !== null) props.value = String(value);
-
+    if (value !== undefined && value !== null) value = String(value);
+    if (value===undefined || value===null) value = '';
 
     const inputProps = {
         ...props,
-        onBlur: onBlur,
-        inputMode: type==='number'?'none':undefined,
+        value,
         ref: inputRef,
+        placeholder,
+        inputMode: type==='number'?'none':undefined,
         onPointerDown: (e)=>{
-            if (e.pointerType==='touch'){
+            if (e.pointerType!=='mouse' && type==='number'){
                 touchStartHere.current=true;
             }
         },
         onPointerUp: (e)=>{
-            if (e.pointerType==='touch'){
+            if (e.pointerType!=='mouse' && type==='number'){
                 if (touchStartHere.current){
                     if (document.elementFromPoint(e.clientX, e.clientY)===e.target){
-                        //Was clicked with fanger
                         setShowNumberPad(true);
                     }
                 }
@@ -32,45 +32,30 @@ export default function InputWithBlur({isFormInput, onChange, onBlur, value, inp
             }
         },
         onChange: (e)=>onChange(e.target.value),
-        onKeyPress: e => {
-            if (e.key === 'Enter') {
-                if (onBlur) {
-                    e.preventDefault();
-                    onBlur(e.target.value)
-                }
-            }
-        }
     };
+
+    let numberPad = showNumberPad ? (
+        <NumberPad 
+            initialValue={value}
+            title={''}
+            saveAndClose={(newVal)=>{
+                onChange(newVal);
+                setShowNumberPad(false);
+            }
+        }/>
+    ):(
+        null
+    )
 
     if (isFormInput){
         return <>
-            {
-                showNumberPad ? (
-                    <NumberPad initialValue={props.value} title={''} saveAndClose={(newVal)=>{
-                        onChange(newVal);
-                        setShowNumberPad(false);
-                        onBlur(newVal);
-                    }}/>
-                ):(
-                    null
-                )
-            }
+            {numberPad}
             <Form.Input {...inputProps}/>
         </>
     }
     return (
         <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
-            {
-                showNumberPad ? (
-                    <NumberPad initialValue={props.value} title={''} saveAndClose={(newVal)=>{
-                        onChange(newVal);
-                        setShowNumberPad(false);
-                        onBlur(newVal);
-                    }}/>
-                ):(
-                    null
-                )
-            }
+            {numberPad}
             <Input {...inputProps}/>
         </form>
     );

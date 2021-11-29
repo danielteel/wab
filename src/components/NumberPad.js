@@ -84,6 +84,7 @@ export default class NumberPad extends React.Component {
         this.touch={};
         this.scratchpad=props.initialValue;
         this.canvasRef = React.createRef();
+        this.modalRef = React.createRef();
 
         this.mounted=true;
 
@@ -119,6 +120,9 @@ export default class NumberPad extends React.Component {
 
     redraw = () => {
         if (!this.mounted) return;
+        
+        this.modalRef.current.focus();
+        this.canvasRef.current.focus();
         
         const rect=this.canvasRef.current.getBoundingClientRect();
         const context = this.canvasRef.current.getContext('2d')
@@ -271,7 +275,7 @@ export default class NumberPad extends React.Component {
     
     render = () => {
         return (
-                <PadModal>
+                <PadModal ref={this.modalRef}>
                     <canvas ref={this.canvasRef} style={{left: 0, top: 0, width: this.state.width, height: this.state.height}} width={this.state.width} height={this.state.height}
                         onClick={this.onClick} onTouchMove={this.touchMove} onTouchStart={this.touchStart} onTouchEnd={this.touchEnd}>Canvas not supported</canvas>
                 </PadModal>
