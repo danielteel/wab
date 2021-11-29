@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Table, Button, Modal } from "semantic-ui-react";
+import { Table, Button, Input } from "semantic-ui-react";
 import { formatArm, formatWeight, formatMoment, realNumber, momentSimplifier } from "../../common";
 
 import InputWithBlur from '../InputWithBlur';
@@ -88,16 +88,16 @@ export default function KOrCItem({item, mergeItem, deleteItem, firstBoxRef, inde
                 </Modal>
             } */}
             <Table.Cell style={noPadCell}>
-                    <InputWithBlur type='text' placeholder='name' value={name} onChange={setName} onBlur={saveName} fluid inputRef={firstBoxRef} input={noBorderInput}/>
+                    <InputWithBlur as={Input} autoComplete='off' type='text' placeholder='name' value={name} onChange={setName} onBlur={saveName} fluid inputRef={firstBoxRef} input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                    <InputWithBlur type='number' placeholder='weight' value={weight} onChange={setWeight} onBlur={saveWeight} fluid input={noBorderInput}/>
+                    <InputWithBlur as={Input} type='number' placeholder='weight' value={weight} onChange={setWeight} onBlur={saveWeight} fluid input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                    <InputWithBlur type='number' placeholder='arm' value={arm} onChange={setArm} onBlur={saveArm} fluid input={noBorderInput}/>
+                    <InputWithBlur as={Input} type='number' placeholder='arm' value={arm} onChange={setArm} onBlur={saveArm} fluid input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell style={noPadCell}>
-                    <InputWithBlur type='number' placeholder='moment' value={moment} onChange={setMoment} onBlur={saveMoment} fluid input={noBorderInput}/>
+                    <InputWithBlur as={Input} type='number' placeholder='moment' value={moment} onChange={setMoment} onBlur={saveMoment} fluid input={noBorderInput}/>
             </Table.Cell>
             <Table.Cell>
                 <Button tabIndex='-1' icon='minus' size='mini' negative onClick={()=>deleteItem(keyOrIndex())}/>

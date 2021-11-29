@@ -112,10 +112,7 @@ export default class NumberPad extends React.Component {
             {type: 'button', x: 0.5 , y: 0.8,  w: .25, h: 0.2, text: ".",   click: this.addDigit},
         ];
 
-        this.canClick=false;
-        setTimeout(()=>{
-            this.setState({canClick: true})
-        }, 100);
+        this.touchStarted=false;
     }
 
     redraw = () => {
@@ -188,7 +185,7 @@ export default class NumberPad extends React.Component {
     }
 
     touchStart = (e) => {
-        if (!this.state.canClick) return;
+        this.touchStarted=true;
         const rect=e.target.getBoundingClientRect();
         const mX=(e.touches[0].clientX-rect.x)/rect.width;
         const mY=(e.touches[0].clientY-rect.y)/rect.height;
@@ -206,7 +203,7 @@ export default class NumberPad extends React.Component {
         this.redraw();
     }
     touchMove = (e) => {
-        if (!this.state.canClick) return;
+        if (!this.touchStarted) return;
         const rect=e.target.getBoundingClientRect();
         const mX=(e.changedTouches[0].clientX-rect.x)/rect.width;
         const mY=(e.changedTouches[0].clientY-rect.y)/rect.height;
@@ -220,8 +217,9 @@ export default class NumberPad extends React.Component {
     }
     touchEnd = (e) => {
         e.preventDefault();
-        if (!this.state.canClick) return;
-
+        if (!this.touchStarted) return;
+        this.touchStarted=false;
+        
         const rect=e.target.getBoundingClientRect();
         const mX=(e.changedTouches[0].clientX-rect.x)/rect.width;
         const mY=(e.changedTouches[0].clientY-rect.y)/rect.height;

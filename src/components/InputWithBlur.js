@@ -1,12 +1,12 @@
-import {Input, Form} from 'semantic-ui-react';
-import {useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 
 import NumberPad from './NumberPad';
 
 
-export default function MobileInput({isFormInput, onChange, value, inputRef, type, placeholder, ...props}){
+export default function MobileInput({as, onChange, value, inputRef, type, placeholder, autoComplete, ...props}){
     const touchStartHere = useRef(false);
     const [showNumberPad, setShowNumberPad] = useState(false);
+    if (!as) as='input';
     if (value !== undefined && value !== null) value = String(value);
     if (value===undefined || value===null) value = '';
 
@@ -16,6 +16,7 @@ export default function MobileInput({isFormInput, onChange, value, inputRef, typ
         ref: inputRef,
         placeholder,
         inputMode: type==='number'?'none':undefined,
+        onSubmit: (e)=>e.preventDefault(),
         onPointerDown: (e)=>{
             if (e.pointerType!=='mouse' && type==='number'){
                 touchStartHere.current=true;
@@ -37,7 +38,7 @@ export default function MobileInput({isFormInput, onChange, value, inputRef, typ
     let numberPad = showNumberPad ? (
         <NumberPad 
             initialValue={value}
-            title={''}
+            title={placeholder}
             saveAndClose={(newVal)=>{
                 onChange(newVal);
                 setShowNumberPad(false);
@@ -47,16 +48,16 @@ export default function MobileInput({isFormInput, onChange, value, inputRef, typ
         null
     )
 
-    if (isFormInput){
-        return <>
-            {numberPad}
-            <Form.Input {...inputProps}/>
-        </>
-    }
     return (
-        <form autoComplete='off' spellCheck='false' onSubmit={(e)=>e.preventDefault()}>
+        <>
             {numberPad}
-            <Input {...inputProps}/>
-        </form>
+            {   autoComplete==='off' ?
+                    <form autoComplete='off'>
+                        {React.createElement(as, inputProps, null)} 
+                    </form>
+                :
+                    React.createElement(as, inputProps, null)
+            }
+        </>
     );
 }

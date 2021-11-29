@@ -36,8 +36,8 @@ export default function EditBasicDetails({formF, mergeFormF}){
     return (
         <Form>
             <Form.Field>
-                <InputWithBlur 
-                    isFormInput
+                <InputWithBlur
+                    as={Form.Input}
                     fluid
                     label='Mission Name'
                     type='text'
@@ -60,7 +60,7 @@ export default function EditBasicDetails({formF, mergeFormF}){
 
             <Form.Field>
                 <InputWithBlur 
-                    isFormInput
+                    as={Form.Input}
                     label='Crew Weight'
                     type='number'
                     value={formF.crew?.weight}
@@ -68,7 +68,7 @@ export default function EditBasicDetails({formF, mergeFormF}){
                     onBlur={()=>mergeFormF({crew: {weight: formatWeight(formF.crew.weight), moment: formatMoment(formF.crew.moment)}})}
                 />
                 <InputWithBlur 
-                    isFormInput
+                    as={Form.Input}
                     label='Crew Moment'
                     type='number'
                     value={formF.crew?.moment}
